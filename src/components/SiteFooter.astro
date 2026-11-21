@@ -1,0 +1,83 @@
+---
+import { LINKS, NAV, SITE } from '../data/site';
+import { url } from '../utils/url';
+
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-wide site-footer__inner">
+    <div>
+      <p class="site-footer__name">{SITE.name}</p>
+      <p class="site-footer__line">{SITE.areas.join(' · ')}</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="site-footer__links">
+        {NAV.slice(1).map((item) => <li><a href={url(item.path)}>{item.label}</a></li>)}
+        <li><a href={url('/rss.xml')}>RSS</a></li>
+        <li><a href={LINKS.github.href} rel="me">{LINKS.github.label}</a></li>
+        <li><a href={LINKS.linkedin.href} rel="me">{LINKS.linkedin.label}</a></li>
+      </ul>
+    </nav>
+    <p class="site-footer__legal">© {year} {SITE.name}. Diagrams and text are original unless a source is cited.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--s-7);
+    border-top: 1px solid var(--c-rule);
+    background: var(--c-surface);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--s-4) var(--s-6);
+    padding-block: var(--s-7);
+    align-items: start;
+  }
+
+  .site-footer__name {
+    font-family: var(--f-display);
+    font-weight: 650;
+    font-size: 1.15rem;
+    margin: 0;
+  }
+
+  .site-footer__line {
+    margin: var(--s-1) 0 0;
+    color: var(--c-graphite);
+    font-size: var(--step--1);
+  }
+
+  .site-footer__links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-5);
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-footer__links a {
+    display: inline-block;
+    min-height: 2.75rem;
+    padding-block: 0.6rem;
+    color: var(--c-ink);
+    font-weight: 600;
+  }
+
+  .site-footer__legal {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  @media (max-width: 48rem) {
+    .site-footer__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

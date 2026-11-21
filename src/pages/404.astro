@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../utils/url';
+---
+
+<BaseLayout title="Page not found" description="This page does not exist. Try the architecture library or the writing index." noindex noCanonical>
+  <section class="container-wide not-found" aria-labelledby="nf-title">
+    <p class="eyebrow">404</p>
+    <h1 id="nf-title">This page does not exist.</h1>
+    <p class="lede">
+      The site was redesigned in November 2026 and some older pages were retired. You might be looking for:
+    </p>
+    <ul>
+      <li><a href={url('/')}>Home</a></li>
+      <li><a href={url('/architecture/')}>Architecture</a></li>
+      <li><a href={url('/writing/')}>Writing</a></li>
+      <li><a href={url('/about/')}>About</a></li>
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding-block: var(--s-9);
+  }
+
+  .not-found li {
+    min-height: 2rem;
+  }
+</style>

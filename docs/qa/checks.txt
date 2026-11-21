@@ -1,0 +1,45 @@
+# Release checks, run in order on the final source. Times are UTC.
+
+## 2026-11-21T18:41:38Z npm run build (astro check + astro build)
+- 0 errors
+- 0 warnings
+- 0 hints
+18:41:40 [build] 8 page(s) built in 398ms
+18:41:40 [build] Complete!
+exit=0
+
+## 2026-11-21T18:41:40Z npm run test:links
+Internal link check passed: 279 internal references across 25 files resolve.
+
+## 2026-11-21T18:41:41Z npm run test:content
+Content safety scan passed: 128 files (27 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
+
+## 2026-11-21T18:41:41Z npm run test:contrast
+Contrast: 110 text/background pairs checked; lowest 5.03:1 (token teal on log-based-cdc copperSoft).
+  log-based-cdc step numeral (surface on copper): 6.12:1
+
+## 2026-11-21T18:41:41Z node src/visuals/log-based-cdc/draw.mjs, twice, then SHA-256 of both SVGs
+85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
+52d2fe168a2bf973c35761a28fc1fef6d9b0fbfa67cadcc9622ca4737fc4ff79  src/visuals/log-based-cdc/figure-2.svg
+85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
+52d2fe168a2bf973c35761a28fc1fef6d9b0fbfa67cadcc9622ca4737fc4ff79  src/visuals/log-based-cdc/figure-2.svg
+
+## built files
+content pages: 7 plus 404.html; top-level legacy redirect pages: 13
+
+## 2026-11-21T18:41:41Z merge_logic_test.py (DuckDB)
+after run 1: [('A', 'v2', False, 102), ('B', 'v1', False, 103)]
+after run 2: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
+re-run of run 2: unchanged
+after run 3: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
+C stays deleted after replayed insert
+null stored position updated by first change
+ALL ASSERTIONS PASSED
+exit=0
+
+
+## 2026-11-21T18:45:02Z after QA_REPORT.md and the last doc edit: npm run test:content
+Content safety scan passed: 133 files (27 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
+
+## 2026-11-21T18:45:02Z after QA_REPORT.md and the last doc edit: npm run test:links
+Internal link check passed: 279 internal references across 25 files resolve.

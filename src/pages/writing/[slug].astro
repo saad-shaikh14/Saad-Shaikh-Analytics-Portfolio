@@ -1,0 +1,206 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SourceList from '../../components/SourceList.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { CATEGORY_LABELS, SITE } from '../../data/site';
+import { formatDate, isoDate, publishedArticles, readingMinutes } from '../../utils/content';
+import { absoluteUrl, url } from '../../utils/url';
+
+export async function getStaticPaths() {
+  const articles = await publishedArticles();
+  return articles.map((article) => {
+    // Related: explicit relatedContent first, then shared tags, then the same category.
+    const others = articles.filter((a) => a.id !== article.id);
+    const explicit = others.filter((a) => article.data.relatedContent.includes(a.id));
+    const scored = others
+      .filter((a) => !article.data.relatedContent.includes(a.id))
+      .map((a) => ({
+        a,
+        score:
+          a.data.tags.filter((t) => article.data.tags.includes(t)).length * 2 +
+          (a.data.category === article.data.category ? 1 : 0),
+      }))
+      .filter((x) => x.score > 0)
+      .sort((x, y) => y.score - x.score)
+      .map((x) => x.a);
+    return { params: { slug: article.id }, props: { article, related: [...explicit, ...scored].slice(0, 3) } };
+  });
+}
+
+const { article, related } = Astro.props;
+const { Content, headings } = await render(article);
+const toc = article.data.toc ? headings.filter((h) => h.depth === 2) : [];
+const minutes = readingMinutes(article.body);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: article.data.title,
+    description: article.data.description,
+    datePublished: isoDate(article.data.publicationDate),
+    dateModified: isoDate(article.data.updatedDate ?? article.data.publicationDate),
+    author: { '@type': 'Person', name: article.data.author, url: absoluteUrl('/about/') },
+    mainEntityOfPage: article.data.canonicalUrl ?? absoluteUrl(`/writing/${article.id}/`),
+    inLanguage: SITE.lang,
+  },
+];
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  type="article"
+  publishedTime={article.data.publicationDate}
+  modifiedTime={article.data.updatedDate}
+  canonical={article.data.canonicalUrl}
+  noindex={article.data.draft}
+  jsonLd={jsonLd}
+>
+  <article class="article">
+    <header class="container-wide article__header">
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <a href={url('/writing/')}>Writing</a>
+        <span aria-hidden="true"> / </span>
+        <span>{CATEGORY_LABELS[article.data.category]}</span>
+      </nav>
+      {article.data.draft && <p class="draft-flag" role="note">Draft: not published</p>}
+      <h1>{article.data.title}</h1>
+      {article.data.subtitle && <p class="lede">{article.data.subtitle}</p>}
+      <ul class="article__meta">
+        <li>{article.data.author}</li>
+        <li>
+          <time datetime={isoDate(article.data.publicationDate)}>{formatDate(article.data.publicationDate)}</time>
+        </li>
+        {
+          article.data.updatedDate && (
+            <li>
+              Updated <time datetime={isoDate(article.data.updatedDate)}>{formatDate(article.data.updatedDate)}</time>
+            </li>
+          )
+        }
+        <li>{minutes} min read</li>
+      </ul>
+    </header>
+
+    <div class="container-wide article__body">
+      <div class="article__main">
+        <p class="article__abstract">{article.data.summary}</p>
+        {
+          toc.length > 2 && (
+            <nav class="toc" aria-labelledby="toc-title">
+              <h2 id="toc-title">Contents</h2>
+              <ol>
+                {toc.map((h) => (
+                  <li>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )
+        }
+        <div class="prose">
+          <Content />
+        </div>
+        {article.data.sources.length > 0 && <SourceList sources={article.data.sources} />}
+      </div>
+    </div>
+
+    {
+      related.length > 0 && (
+        <aside class="container-wide related" aria-labelledby="related-title">
+          <h2 id="related-title">Related</h2>
+          {related.map((r) => (
+            <EntryCard
+              href={url(`/writing/${r.id}/`)}
+              title={r.data.title}
+              summary={r.data.summary}
+              kicker={CATEGORY_LABELS[r.data.category]}
+              date={r.data.publicationDate}
+            />
+          ))}
+        </aside>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .article__header {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .article__header h1 {
+    max-width: 24ch;
+    margin: var(--s-3) 0 var(--s-4);
+  }
+
+  .breadcrumb {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--c-graphite);
+  }
+
+  .draft-flag {
+    display: inline-block;
+    margin: var(--s-4) 0 0;
+    padding: var(--s-1) var(--s-3);
+    background: var(--c-parchment);
+    border: 1px solid var(--c-copper);
+    border-radius: var(--radius-small);
+    font-weight: 700;
+    font-size: var(--step--1);
+  }
+
+  .article__meta {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  .article__main {
+    max-width: var(--measure);
+  }
+
+  .article__abstract {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    margin-top: 0;
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--c-rule);
+  }
+
+  .toc {
+    margin: var(--s-5) 0;
+    padding: var(--s-5);
+    background: var(--c-parchment);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+  }
+
+  .toc h2 {
+    font-family: var(--f-body);
+    font-size: var(--step-0);
+    margin: 0 0 var(--s-3);
+  }
+
+  .toc ol {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  .related {
+    margin-top: var(--s-8);
+  }
+
+  .related h2 {
+    font-size: var(--step-2);
+  }
+</style>

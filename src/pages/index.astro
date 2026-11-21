@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EntryCard from '../components/EntryCard.astro';
+import Figure from '../components/Figure.astro';
+import { ARCHITECTURE_TYPES, LINKS, SITE } from '../data/site';
+import { publishedArchitecture, publishedArticles } from '../utils/content';
+import { absoluteUrl, url } from '../utils/url';
+import { figuresFor } from '../visuals';
+
+const architecture = await publishedArchitecture();
+const articles = await publishedArticles();
+const featured = architecture[0];
+const featuredFigure = featured ? figuresFor(featured.data.visual)[0] : undefined;
+
+// "Selected knowledge" lists only real, published items, excluding the one already featured.
+const selected = [
+  ...architecture.slice(featured ? 1 : 0).map((e) => ({
+    href: url(`/architecture/${e.id}/`),
+    title: e.data.title,
+    summary: e.data.summary,
+    kicker: ARCHITECTURE_TYPES[e.data.architectureType].label,
+    date: e.data.publicationDate,
+  })),
+  ...articles.map((a) => ({
+    href: url(`/writing/${a.id}/`),
+    title: a.data.title,
+    summary: a.data.summary,
+    kicker: 'Article',
+    date: a.data.publicationDate,
+  })),
+]
+  .sort((a, b) => b.date.valueOf() - a.date.valueOf())
+  .slice(0, 4);
+
+const topics = [
+  {
+    title: 'Data Engineering',
+    text: 'The pipelines that ingest, transform and deliver data, and the details that decide whether they can be trusted: incremental processing, idempotent loads, late-arriving data, testing and reconciliation.',
+  },
+  {
+    title: 'Data Platform Architecture',
+    text: 'How storage, compute, transformation, orchestration and governance fit together, and the trade-offs between warehouses and lakehouses, batch and streaming, managed and self-run components.',
+  },
+  {
+    title: 'AI and Emerging Systems',
+    text: 'How AI agents and new infrastructure change the way data platforms are built and operated, examined with the same questions as any other system: what it guarantees, how it fails and who stays accountable.',
+  },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    alternateName: `${SITE.name}: ${SITE.subtitle}`,
+    url: absoluteUrl('/'),
+    inLanguage: SITE.lang,
+  },
+];
+---
+
+<BaseLayout jsonLd={jsonLd}>
+  <section class="hero container-wide" aria-labelledby="hero-title">
+    <p class="eyebrow">{SITE.areas.join(' · ')}</p>
+    <h1 id="hero-title">How modern data platforms are designed, built and operated.</h1>
+    <p class="lede">
+      I'm Saad Shaikh, a data engineer. This is where I take data systems apart: reference architectures drawn from
+      cited documentation, with the failure modes ordinary diagrams leave out.
+    </p>
+    <ul class="hero__links">
+      <li><a class="text-link" href={url('/architecture/')}>Explore the architecture library</a></li>
+      <li><a class="text-link" href={url('/about/')}>About me</a></li>
+    </ul>
+  </section>
+
+  {
+    featured && featuredFigure && (
+      <section class="section featured" aria-labelledby="featured-title">
+        <div class="container-wide">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Featured architecture · {ARCHITECTURE_TYPES[featured.data.architectureType].label}</p>
+              <h2 id="featured-title">
+                <a class="featured__link" href={url(`/architecture/${featured.id}/`)}>{featured.data.title}</a>
+              </h2>
+            </div>
+            <a class="text-link" href={url(`/architecture/${featured.id}/`)}>
+              Read the full entry<span class="visually-hidden">: {featured.data.title}</span>
+            </a>
+          </div>
+          <p class="lede">{featured.data.summary}</p>
+          <Figure figure={featuredFigure} entry={featured.id} idPrefix="featured-figure" />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section topics" aria-labelledby="topics-title">
+    <div class="container-wide">
+      <div class="section-head">
+        <h2 id="topics-title">What this site covers</h2>
+      </div>
+      <ul class="topics__grid">
+        {
+          topics.map((t) => (
+            <li class="topic">
+              <h3>{t.title}</h3>
+              <p>{t.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    selected.length > 0 && (
+      <section class="section" aria-labelledby="selected-title">
+        <div class="container-wide">
+          <div class="section-head">
+            <h2 id="selected-title">Selected knowledge</h2>
+            <a class="text-link" href={url('/writing/')}>All writing</a>
+          </div>
+          <div class="selected__list">
+            {selected.map((s) => (
+              <EntryCard {...s} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section about-preview" aria-labelledby="about-preview-title">
+    <div class="container-wide about-preview__inner">
+      <h2 id="about-preview-title">About</h2>
+      <div class="measure">
+        <p>
+          I build and operate cloud data platforms on AWS and Snowflake: change data capture and ingestion, warehouse
+          modelling with dbt, orchestration, and warehouse infrastructure as code with Terraform. I studied data science
+          at the University of Hertfordshire.
+        </p>
+        <p>
+          <a class="text-link" href={url('/about/')}>More about me</a>
+          <span aria-hidden="true"> · </span>
+          <a href={LINKS.github.href} rel="me">GitHub</a>
+          <span aria-hidden="true"> · </span>
+          <a href={LINKS.linkedin.href} rel="me">LinkedIn</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--s-9) var(--s-8);
+  }
+
+  .hero h1 {
+    max-width: 17ch;
+    margin: 0 0 var(--s-5);
+  }
+
+  .hero__links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3) var(--s-6);
+    margin: var(--s-6) 0 0;
+    padding: 0;
+  }
+
+  .hero__links a {
+    display: inline-block;
+    min-height: 2.75rem;
+    padding-block: 0.55rem;
+  }
+
+  .hero__links a::after {
+    content: ' →';
+  }
+
+  .featured__link {
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+
+  .featured__link:hover {
+    color: var(--c-copper);
+  }
+
+  .topics__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-6);
+  }
+
+  .topic {
+    border-top: 3px solid var(--c-navy);
+    padding-top: var(--s-4);
+  }
+
+  .topic:first-child {
+    border-top-color: var(--c-copper);
+  }
+
+  .topic:last-child {
+    border-top-color: var(--c-teal);
+  }
+
+  .topic h3 {
+    font-size: var(--step-1);
+    margin: 0 0 var(--s-3);
+  }
+
+  .topic p {
+    margin: 0;
+    color: var(--c-graphite);
+  }
+
+  .about-preview__inner {
+    display: grid;
+    grid-template-columns: minmax(10rem, 1fr) 3fr;
+    gap: var(--s-6);
+  }
+
+  .about-preview__inner h2 {
+    margin: 0;
+  }
+
+  .about-preview p:first-child {
+    margin-top: 0;
+  }
+
+  @media (max-width: 56rem) {
+    .topics__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-preview__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .hero {
+      padding-block: var(--s-7) var(--s-6);
+    }
+  }
+</style>

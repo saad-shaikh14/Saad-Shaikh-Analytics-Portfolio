@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LINKS, SITE } from '../data/site';
+import { absoluteUrl, url } from '../utils/url';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: absoluteUrl('/about/'),
+    mainEntity: {
+      '@type': 'Person',
+      name: SITE.name,
+      jobTitle: 'Data Engineer',
+      url: absoluteUrl('/'),
+      sameAs: [LINKS.github.href, LINKS.linkedin.href],
+    },
+  },
+];
+---
+
+<BaseLayout
+  title="About"
+  description="Saad Shaikh is a data engineer who builds and operates cloud data platforms and writes about data engineering, data platform architecture and AI."
+  type="profile"
+  jsonLd={jsonLd}
+>
+  <section class="container-wide about" aria-labelledby="about-title">
+    <p class="eyebrow">About</p>
+    <h1 id="about-title">Saad Shaikh</h1>
+    <div class="about__grid">
+      <div class="prose">
+        <p class="lede">
+          I'm a data engineer based in London. I build and operate cloud data platforms, and I write about how they are
+          designed and what makes them hold up in production.
+        </p>
+
+        <h2>The work</h2>
+        <p>
+          My day-to-day work is the engineering underneath a data platform in the online gaming industry: change data
+          capture and ingestion from operational databases, warehouse modelling with Snowflake and dbt, orchestration
+          with Airflow and Dagster, warehouse infrastructure as code with Terraform, and AWS services such as S3, Lambda
+          and DMS.
+        </p>
+        <p>
+          Most of what I find interesting sits in the parts that are easy to leave out of a diagram: what a pipeline does
+          when a job restarts or a change arrives twice, how deletes and replays are handled, and how you show that the
+          numbers at the end are right.
+        </p>
+
+        <h2>How I came to it</h2>
+        <p>
+          I started in data analysis and reporting, then moved into building the platforms underneath them. I studied
+          for an MSc in Data Science at the University of Hertfordshire, after a bachelor's degree in engineering from the
+          University of Mumbai.
+        </p>
+
+        <h2>What this site covers</h2>
+        <p>
+          Data engineering, data platform architecture and AI, including how AI agents and new infrastructure change the
+          way data systems are built and operated. The aim throughout is to separate what has been announced from what
+          has been shown to work, and to explain the trade-offs rather than declare winners.
+        </p>
+
+        <h2>How this site is made</h2>
+        <p>
+          Architecture figures are drawn as vector graphics from cited documentation, and each one lists its sources.
+          Reference architectures describe possible designs; when something on this site comes from systems I have built
+          myself, it says so, and it never names an employer's or a client's internal systems.
+        </p>
+      </div>
+
+      <aside class="about__links" aria-labelledby="links-title">
+        <h2 id="links-title">Elsewhere</h2>
+        <ul>
+          <li><a href={LINKS.github.href} rel="me">GitHub</a></li>
+          <li><a href={LINKS.linkedin.href} rel="me">LinkedIn</a></li>
+          <li><a href={url('/rss.xml')}>RSS feed</a></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .about h1 {
+    margin: 0 0 var(--s-6);
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: var(--s-8);
+    align-items: start;
+  }
+
+  .about__links {
+    border-top: 3px solid var(--c-copper);
+    padding-top: var(--s-4);
+  }
+
+  .about__links h2 {
+    font-family: var(--f-body);
+    font-size: var(--step-0);
+    font-weight: 700;
+    margin: 0 0 var(--s-3);
+  }
+
+  .about__links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .about__links a {
+    display: inline-block;
+    min-height: 2.75rem;
+    padding-block: 0.6rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 56rem) {
+    .about__grid {
+      grid-template-columns: 1fr;
+      gap: var(--s-6);
+    }
+  }
+</style>

@@ -1,0 +1,342 @@
+---
+title: Log-based change data capture into an analytical warehouse
+description: A reference blueprint for streaming database changes into a warehouse with log-based CDC, and how to make duplicate delivery harmless.
+summary: How committed changes in an operational database become current-state tables in a warehouse using log-based change data capture, and why the warehouse side must be built for duplicates, deletes and replays from the start.
+architectureType: reference-blueprint
+assumptions:
+  - The source is a transactional database whose changes can be read from its log, such as PostgreSQL or MySQL with InnoDB tables.
+  - Captured tables have a primary key, so changes can be keyed and ordered per row.
+  - The warehouse supports MERGE, so changes can be applied as inserts, updates and deletes in one statement.
+  - Minutes of latency are acceptable. This covers analytical freshness, not sub-second serving.
+  - Product names are examples. The design is vendor-neutral and describes no specific deployment.
+technologies: [PostgreSQL, MySQL, Debezium, Apache Kafka, AWS DMS, Snowflake, BigQuery]
+visual: log-based-cdc
+reviewStatus: verified
+draft: false
+publicationDate: 2026-11-21
+lastReviewed: 2026-11-21
+tags: [cdc, ingestion, warehouses, reliability]
+sources:
+  - title: "47.2 Logical Decoding Concepts"
+    url: "https://www.postgresql.org/docs/current/logicaldecoding-explanation.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "19.6 Replication (max_slot_wal_keep_size)"
+    url: "https://www.postgresql.org/docs/current/runtime-config-replication.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "53.22 pg_replication_slots"
+    url: "https://www.postgresql.org/docs/current/view-pg-replication-slots.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "19.5 Write Ahead Log (wal_level)"
+    url: "https://www.postgresql.org/docs/current/runtime-config-wal.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "PostgreSQL 19 release notes"
+    url: "https://www.postgresql.org/docs/current/release-19.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "47.1 Logical Decoding Examples (wal_level)"
+    url: "https://www.postgresql.org/docs/18/logicaldecoding-example.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 18"
+    accessed: 2026-11-21
+  - title: "66.2 TOAST"
+    url: "https://www.postgresql.org/docs/current/storage-toast.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "7.4.4 The Binary Log"
+    url: "https://dev.mysql.com/doc/refman/8.4/en/binary-log.html"
+    publisher: "Oracle, MySQL Reference Manual"
+    version: "MySQL 8.4"
+    accessed: 2026-11-21
+  - title: "17.19 InnoDB and MySQL Replication"
+    url: "https://dev.mysql.com/doc/refman/8.4/en/innodb-and-mysql-replication.html"
+    publisher: "Oracle, MySQL Reference Manual"
+    version: "MySQL 8.4"
+    accessed: 2026-11-21
+  - title: "Debezium connector for PostgreSQL"
+    url: "https://debezium.io/documentation/reference/stable/connectors/postgresql.html"
+    publisher: "Debezium"
+    version: "3.7"
+    accessed: 2026-11-21
+  - title: "Debezium connector for MySQL"
+    url: "https://debezium.io/documentation/reference/stable/connectors/mysql.html"
+    publisher: "Debezium"
+    version: "3.7"
+    accessed: 2026-11-21
+  - title: "Exactly once delivery"
+    url: "https://debezium.io/documentation/reference/stable/configuration/eos.html"
+    publisher: "Debezium"
+    version: "3.7"
+    accessed: 2026-11-21
+  - title: "Debezium Features"
+    url: "https://debezium.io/documentation/reference/stable/features.html"
+    publisher: "Debezium"
+    version: "3.7"
+    accessed: 2026-11-21
+  - title: "Debezium 3.7 release overview (tested database versions)"
+    url: "https://debezium.io/releases/3.7/"
+    publisher: "Debezium"
+    version: "3.7"
+    accessed: 2026-11-21
+  - title: "Five Advantages of Log-Based Change Data Capture"
+    url: "https://debezium.io/blog/2018/07/19/advantages-of-log-based-change-data-capture/"
+    publisher: "Debezium blog (Gunnar Morling)"
+    version: "19 July 2018"
+    accessed: 2026-11-21
+  - title: "Introduction: main concepts and terminology"
+    url: "https://kafka.apache.org/44/getting-started/introduction/#main-concepts-and-terminology"
+    publisher: "Apache Kafka"
+    version: "Kafka 4.4"
+    accessed: 2026-11-21
+  - title: "Design: message delivery semantics"
+    url: "https://kafka.apache.org/44/design/design/#message-delivery-semantics"
+    publisher: "Apache Kafka"
+    version: "Kafka 4.4"
+    accessed: 2026-11-21
+  - title: "MERGE"
+    url: "https://docs.snowflake.com/en/sql-reference/sql/merge"
+    publisher: "Snowflake Documentation"
+    accessed: 2026-11-21
+  - title: "QUALIFY"
+    url: "https://docs.snowflake.com/en/sql-reference/constructs/qualify"
+    publisher: "Snowflake Documentation"
+    accessed: 2026-11-21
+  - title: "IFF"
+    url: "https://docs.snowflake.com/en/sql-reference/functions/iff"
+    publisher: "Snowflake Documentation"
+    accessed: 2026-11-21
+  - title: "DML syntax: MERGE statement"
+    url: "https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax"
+    publisher: "Google Cloud, BigQuery documentation"
+    version: "Last updated 10 November 2026"
+    accessed: 2026-11-21
+  - title: "Using Amazon S3 as a target for AWS Database Migration Service"
+    url: "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html"
+    publisher: "AWS DMS User Guide"
+    accessed: 2026-11-21
+  - title: "Creating tasks for ongoing replication using AWS DMS"
+    url: "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html"
+    publisher: "AWS DMS User Guide"
+    accessed: 2026-11-21
+  - title: "Using transformation rule expressions to define column content (headers)"
+    url: "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Expressions.html"
+    publisher: "AWS DMS User Guide"
+    accessed: 2026-11-21
+  - title: "Monitoring AWS DMS tasks (CDCLatencySource, CDCLatencyTarget)"
+    url: "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Monitoring.html"
+    publisher: "AWS DMS User Guide"
+    accessed: 2026-11-21
+  - title: "CREATE PUBLICATION"
+    url: "https://www.postgresql.org/docs/current/sql-createpublication.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-21
+  - title: "Configuring binary log retention (mysql.rds_set_configuration)"
+    url: "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-stored-proc-configuring.html"
+    publisher: "Amazon RDS User Guide"
+    accessed: 2026-11-21
+---
+
+import Figure from '../../components/Figure.astro';
+import { logBasedCdc } from '../../visuals/log-based-cdc/figures';
+
+Change data capture (CDC) moves the inserts, updates and deletes committed in an operational database into somewhere else, here an analytical warehouse, without querying the tables on a timer. The log-based form reads changes from the database's own transaction log. It is the common way to keep warehouse tables close to a live system, and most of the work is not where the diagram on a vendor's landing page puts it. Reading the log is the easy part. The hard parts are on the warehouse side: changes can arrive twice, deletes have to be handled on purpose, and a restart must not quietly corrupt the target.
+
+This entry is a reference blueprint: a possible design with its assumptions stated, built from the documentation listed under References. It generalises the shape of CDC pipelines I have built and operated, but it is not a diagram of any specific system.
+
+## The blueprint
+
+<Figure figure={logBasedCdc.figures[0]} entry="log-based-cdc-into-a-warehouse" />
+
+The numbered steps in figure 1:
+
+1. **Capture.** A CDC process (for example Debezium or AWS DMS) takes an initial consistent snapshot of the tables, then streams committed changes from the log position it recorded at the snapshot, so no change is missed in between. The snapshot reads the tables themselves. On MySQL, Debezium holds a global read lock while it reads the schemas (its default locking mode), or uses table-level locks where global locks are not permitted.
+2. **Transport.** Change events are keyed by the table's primary key. They go either to an event log such as a Kafka topic, or to change files in object storage with an operation column. AWS DMS writing to Amazon S3 adds an `I`, `U` or `D` field to each change record by default; whether full-load rows carry one depends on its `includeOpForFullLoad` setting. It adds no position unless you include a header column:
+   - `AR_H_STREAM_POSITION`: the source's stream position, such as an LSN, as a source-dependent string.
+   - `AR_H_CHANGE_SEQ`: a unique incrementing number made of a timestamp and a counter.
+
+   Both are empty for full-load rows, and either needs converting into one sortable value.
+3. **Land.** The warehouse loads change records into a landing table without modifying them. Each record keeps the key, the operation, the row image, the source log position and the time it was loaded.
+4. **Deduplicate.** Each run takes the records loaded since the last successful run and keeps only the latest change per key, ordered by log position.
+5. **Merge.** One `MERGE` applies those changes to the current-state tables as inserts, updates and deletes, but only where a change is newer than the position already stored for that key.
+6. **Serve.** Models, BI tools and services read the current-state tables, never the landing layer.
+
+## What each part is responsible for
+
+- **Transaction log.**
+  - In PostgreSQL, logical decoding reads the write-ahead log (WAL).
+  - In MySQL, CDC tools read the binary log, which must use row-based logging. Debezium also requires `binlog_row_image=FULL`.
+  - For PostgreSQL 18 and earlier, logical decoding needs `wal_level=logical`. PostgreSQL 19, released on 19 November 2026, needs only `replica` and raises the effective level automatically when the first logical slot is created. As of 21 November 2026, Debezium 3.7 still documents `logical` and is tested against PostgreSQL 14 to 18.
+- **Checkpoint.** Capture has to remember where it is.
+  - In PostgreSQL that is a replication slot on the server, which holds back the WAL its consumer might still need, even while nothing is connected.
+  - In MySQL the capture tool stores its own offset: the binlog file and position, or a GTID set when GTID mode is enabled.
+- **Change event log or change files.**
+  - With Kafka, events with the same key go to the same partition, and order is guaranteed only within a partition.
+  - Object storage files from AWS DMS are written per table and, by default, not in transaction order.
+- **Landing table.** Append-only. Keeping raw change records means a run can be repeated, or replayed after a fix, without re-reading the source.
+- **Current-state tables.** One row per key, plus the log position of the change that produced it. That position is what makes the rest of the design safe.
+
+## Decisions that matter
+
+### Log-based capture instead of polling
+
+Polling a "last updated" column is simpler, but it cannot see rows that were deleted between polls, and it misses intermediate updates that happen between two runs. Log-based capture sees committed deletes and the versions in between, within the limits listed at the end of this entry, and needs no change to the data model. Polling can still be the right answer when hourly freshness is enough and intermediate versions do not matter.
+
+### Deduplicate before every MERGE
+
+A `MERGE` needs at most one source row per target row. Snowflake returns an error by default when a target row joins several source rows for an update or delete. Worse, duplicate source rows that match no target row are all inserted, silently. BigQuery returns an error when an updating `MERGE` matches more than one source row. A batch of change records nearly always contains several changes for busy keys, so it must be reduced to the latest change per key first.
+
+```sql
+-- Snowflake SQL. :window_start is a placeholder for the start of the rows this run reads.
+MERGE INTO current_state AS t
+USING (
+  SELECT key, op, value, log_position
+  FROM landing_changes
+  WHERE load_id > :window_start
+    AND key IS NOT NULL                -- truncate events carry no key; handle them separately
+    AND log_position IS NOT NULL
+    AND op IN ('c', 'r', 'u', 'd')     -- operation codes normalised when rows land
+  QUALIFY ROW_NUMBER() OVER (PARTITION BY key ORDER BY log_position DESC) = 1
+) AS s
+ON t.key = s.key
+WHEN MATCHED AND (t.log_position IS NULL OR s.log_position > t.log_position) AND s.op = 'd' THEN
+  UPDATE SET is_deleted = TRUE, log_position = s.log_position
+WHEN MATCHED AND (t.log_position IS NULL OR s.log_position > t.log_position) THEN
+  UPDATE SET value = s.value, is_deleted = FALSE, log_position = s.log_position
+WHEN NOT MATCHED THEN
+  INSERT (key, value, is_deleted, log_position)
+  VALUES (s.key, IFF(s.op = 'd', NULL, s.value), s.op = 'd', s.log_position);
+```
+
+**What the sketch assumes.**
+
+- **Positions are present and sortable.**
+  - Every row has a position. Debezium's snapshot rows carry the position recorded at the snapshot. AWS DMS full-load rows carry none, so for an initial load the landing step gives them a value that sorts below any streamed change for the same key.
+  - On MySQL, `log_position` has to be a single sortable value built from the binlog file sequence, the position and the row number.
+- **Row images are complete.**
+  - In PostgreSQL, Debezium leaves values stored with TOAST (PostgreSQL's storage for large field values) out of an update event when they have not changed, unless they are part of the table's replica identity.
+  - Either set `REPLICA IDENTITY FULL` on captured tables, or keep the stored value when such a column is missing. Otherwise `UPDATE SET value = s.value` overwrites it.
+- **Operation codes are normalised.** Debezium's `c`, `u`, `d` and `r` and DMS's `I`, `U` and `D` are mapped to one set when rows land.
+- **No row is skipped between runs.** Choosing which landing rows a run reads needs care: a row stamped before the previous run's cut-off but committed after it would be skipped. Re-reading a small overlap is safe, because the position check ignores anything that is not newer.
+- **Deletes for unseen keys are still written.** A delete for a key the target has never seen is written as a deleted marker with its position, for the reason given under "Deletes are a choice".
+
+Before publishing it, I ran this logic in DuckDB, with `CASE` in place of `IFF`, against every run in figure 2, an insert and delete of a new key in one batch, and rows with missing keys or positions.
+
+### Order by log position, not by timestamps
+
+The log position is what both PostgreSQL and Debezium point to for ordering changes and spotting repeats:
+- PostgreSQL describes a replication slot as replaying changes in the order they were made on the origin server.
+- Debezium suggests tracking the LSN to decide whether an event is a duplicate.
+
+Two details matter:
+- **Debezium's top-level `ts_ms` is not a commit time.** It is when the connector processed the event, on the connector's clock.
+- **In MySQL, a single binlog position is not a total order.** Several rows share one binlog event, so order needs the binlog file, the position and the row number together.
+
+AWS DMS takes a different route for change files written to S3: it documents a column holding each change's source commit timestamp (`TimestampColumnName`) for reconstructing order. For full-load rows that column holds the time DMS transferred the row, not a commit time. Changes in the same transaction share a commit time, and timestamps can tie at the clock's resolution, while a log position does not tie. So I prefer the position wherever one is available. That preference is my reasoning, not a documented rule.
+
+### Deletes are a choice
+
+- **What the log carries.** A delete arrives as a delete event, and in Kafka-based pipelines it is followed by a tombstone by default.
+- **Hard or soft delete.** Applying it as a hard delete keeps the target small. A soft delete keeps the key and its log position, which lets the same position check stop an old, replayed insert from bringing a deleted row back (run 3 in figure 2). For the same reason, a delete for a key the target has never seen, such as an insert and a delete in one batch, is written as a deleted marker. That trade-off is my analysis.
+- **What the log does not carry.** MySQL InnoDB cascade deletes from a foreign key are applied inside the storage engine and are not written to the binary log, so log-based capture never sees them.
+
+### Schema changes need a plan
+
+- **PostgreSQL:** logical decoding carries no DDL, so the connector cannot report schema changes as events.
+- **MySQL:** DDL is in the binlog, and Debezium keeps it in an internal schema history topic that is not meant for consumers.
+
+My recommendation:
+- Treat additive columns as routine.
+- Treat type changes, drops, renames and key changes as reviewed changes, which may need a fresh snapshot.
+
+## Failure and recovery
+
+<Figure figure={logBasedCdc.figures[1]} entry="log-based-cdc-into-a-warehouse" />
+
+**Capture does not skip changes it can read from the log, but some may arrive twice.**
+- Debezium's documentation describes exactly-once delivery when the system runs normally, and at-least-once delivery while it recovers from a fault. After a crash, capture resumes from its last committed offset, so recent changes can be delivered again.
+- PostgreSQL makes the same point about logical decoding: clients are responsible for handling a message seen more than once.
+- Kafka Connect can provide exactly-once delivery for source connectors when configured for it, but that covers only the write into Kafka. Kafka's own documentation notes that exactly-once into another system, such as a warehouse, needs that system's cooperation.
+- AWS DMS documents duplicates for S3 targets too, in two cases during the full load phase: when the source table is written intensively, and, with `TargetTablePrepMode` set to `DO_NOTHING`, when a task stops and resumes abruptly.
+- Changes can still be lost after capture if loading falls behind the retention of the event log or the change files. That is why load lag is monitored as well as capture lag.
+
+**Figure 2 shows that cooperation.**
+- The landing table keeps every duplicate.
+- Within a batch, deduplication keeps the newest change per key, so the repeated rows lose.
+- Across batches, the merge applies a change only if its log position is newer than the one already stored. Run 3 replays old changes, and the guard rejects them.
+
+Re-running a batch changes nothing, and the target converges on the source once capture catches up. The position check is a design choice, not a product feature.
+
+**When convergence holds.** It depends on at least these conditions, all reasoned from the sources rather than stated by them:
+1. Every captured table has a primary key.
+2. Positions for a key only increase.
+3. Row images are complete. On PostgreSQL that means accounting for TOAST.
+4. The changes are ones the log carries, so no cascade deletes and no truncates.
+5. No change is lost to event-log or file retention, and no landing row is skipped between runs.
+6. Consumers and reconciliation exclude rows marked deleted.
+
+**When the log has moved on.** If the recorded position is no longer in the log, capture cannot resume from it and needs a new snapshot. That happens when:
+- in PostgreSQL, a slot exceeds `max_slot_wal_keep_size` and loses WAL it needed;
+- in MySQL, the binlog expires.
+
+**What a new snapshot does not fix:**
+- **Deleted rows.** A snapshot contains only rows that still exist, so rows deleted while capture was stopped stay in the target unless the target is rebuilt or reconciled against the snapshot.
+- **Updated rows, if snapshot rows carry a low placeholder position.** The position check then rejects them for every key already in the target. Rebuild the target from the snapshot, or give the snapshot rows the position the snapshot recorded.
+- **Positions after a MySQL failover.** Debezium documents failing over between MySQL replicas with GTIDs, as long as the new replica has caught up. A binlog file and position, however, point into one server's own log. So my reading is that after a failover, positions from the new server cannot be compared with the stored ones, and the stored positions have to be reset, for example by rebuilding from a snapshot. Otherwise the position check can reject changes without any error. That consequence is my analysis.
+
+## Operating it
+
+**Watch log retention as closely as lag. The risk runs in opposite directions on the two databases:**
+- **PostgreSQL:** a slot holds WAL until its consumer catches up, and by default without limit. A stalled consumer fills the source database's disk. Watch `wal_status` and `safe_wal_size` in `pg_replication_slots`.
+- **MySQL:** binlogs expire on a timer whatever the consumer's state, and the default depends on where MySQL runs.
+  - Self-managed MySQL 8.4 keeps them for 30 days by default.
+  - Amazon RDS for MySQL keeps none by default unless `binlog retention hours` is set, to at most 168 hours.
+
+  A consumer that falls further behind than the retention loses its place. Compare capture lag with the setting.
+- **Loading:** watch the lag between the event log or change files and the landing table, against their retention.
+
+**Lag metrics:**
+- Debezium reports `MilliSecondsBehindSource`, and AWS DMS reports `CDCLatencySource` and `CDCLatencyTarget`.
+- Debezium's lag figure includes any clock difference between the database server and the connector.
+- AWS states that DMS change capture is not real-time and has no latency SLA.
+
+**Reconcile.** Compare row counts and business totals per table between source and target on a schedule. Duplicates, missed deletes and cascade gaps show up there before anyone else finds them.
+
+## Trade-offs
+
+| Concern | What this design gives | What it costs |
+|---|---|---|
+| Reliability | Convergence under duplicate delivery, replays and re-runs | Position columns and guard conditions on every table |
+| Freshness | Minutes, set by the run schedule | Not suited to sub-second serving |
+| Source impact | No polling queries after the snapshot; reads the log | Replication privileges, log retention to watch, and an initial snapshot that reads every table (with locks on MySQL) |
+| Cost | Only changed rows move after the snapshot | A landing layer to store and prune |
+| Operability | Raw changes are kept, so runs can be repeated | Snapshot and re-snapshot procedures to maintain |
+
+## Alternatives
+
+- **Query-based incremental extraction:** a "last updated" column or ID range.
+  - Fewer moving parts and no log access.
+  - Misses hard deletes and intermediate versions.
+- **Periodic full reloads:**
+  - Simplest to reason about.
+  - Cost grows with table size, not with change volume.
+- **Managed connectors:**
+  - Less to operate.
+  - The same questions apply about delivery guarantees, deletes and schema changes; read the documentation for each.
+
+## What this blueprint does not cover
+
+- Tables without a primary key. In PostgreSQL, a table published for logical replication without a replica identity rejects `UPDATE` and `DELETE` on the source itself. Without a key, changes cannot be applied per row.
+- Generated columns. Debezium 3.7's PostgreSQL documentation says its `pgoutput` plugin does not capture their values. PostgreSQL itself does not publish them by default, and from PostgreSQL 18 stored generated columns can be published with `publish_generated_columns = stored`. Check the connector in use before relying on them.
+- MySQL InnoDB cascade deletes, which are not written to the binary log (see "Deletes are a choice").
+- `TRUNCATE`, whose events carry no key.
+- Low-latency serving, cross-region replication and multi-source joins.

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+dist-qa/
+.astro/
+test-results/
+playwright-report/
+.DS_Store
+*.log
+.content-denylist

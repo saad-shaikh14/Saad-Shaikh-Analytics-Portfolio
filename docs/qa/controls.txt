@@ -1,0 +1,46 @@
+# Controls: each check shown to fail when it should. 2026-11-21T18:43:19Z UTC.
+# Control files are created under .qa-controls/ and deleted afterwards; their contents are never printed.
+
+## 1. Safety scan, a file whose content holds a private name
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - .qa-controls/private-name.md: private-name rule #1
+exit=1
+
+## 2. Safety scan, a file whose path holds a private name (path must be withheld)
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - a file path matches private-name rule #1
+exit=1
+
+## 3. Safety scan, a file announcing unpublished content
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - .qa-controls/announcement.md: announcement of unpublished content
+exit=1
+
+## 4. Safety scan, REQUIRE_DENYLIST=true with no list
+Content safety scan FAILED: REQUIRE_DENYLIST is set but no private-name list was provided (CONTENT_DENYLIST).
+exit=1
+
+## 5. Safety scan, an invalid rule in the list (pattern must not be printed)
+Content safety scan FAILED: private-name rule(s) #2 are not valid regular expressions.
+exit=1
+
+## 6. Contrast, graphite lightened to #a8a29a
+Contrast check FAILED: 9 pair(s) below 4.5:1
+  - token graphite on log-based-cdc copperSoft: 2.07:1
+  - token graphite on token navy-soft: 2.13:1
+  - token graphite on log-based-cdc navySoft: 2.13:1
+  (and the remaining pairs below 4.5:1)
+exit=1
+
+## 7. Figure gate, figure 2 set to in-review, production build
+Figure 2 for "log-based-cdc-into-a-warehouse" has status "in-review"; only verified figures can be published.
+exit=1
+
+## 8. Figure gate, the same with INCLUDE_DRAFTS=true
+exit=0
+8 page(s) built
+
+## Restore check
+tokens.css identical to original
+figures.ts identical to original
+.content-denylist back in place

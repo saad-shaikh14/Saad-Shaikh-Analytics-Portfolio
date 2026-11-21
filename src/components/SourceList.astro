@@ -1,0 +1,68 @@
+---
+import { formatDate } from '../utils/content';
+
+interface Source {
+  title: string;
+  url: string;
+  publisher: string;
+  version?: string | undefined;
+  accessed: Date;
+}
+
+interface Props {
+  sources: Source[];
+  heading?: string;
+  id?: string;
+}
+
+const { sources, heading = 'References', id = 'references' } = Astro.props;
+---
+
+<section class="sources" aria-labelledby={`${id}-heading`}>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  <ol class="sources__list" id={id}>
+    {
+      sources.map((s) => (
+        <li>
+          <a href={s.url}>{s.title}</a>{' '}
+          <span class="sources__meta">
+            {s.publisher}
+            {s.version ? `, ${s.version}` : ''}. Accessed {formatDate(s.accessed)}.
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .sources {
+    max-width: var(--measure);
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-rule);
+  }
+
+  .sources h2 {
+    font-size: var(--step-1);
+  }
+
+  .sources__list {
+    padding-left: 1.4em;
+    font-size: 0.95rem;
+  }
+
+  .sources__list li + li {
+    margin-top: var(--s-3);
+  }
+
+  .sources__list a {
+    overflow-wrap: anywhere;
+  }
+
+  .sources__meta {
+    display: block;
+    color: var(--c-graphite);
+    font-size: var(--step--1);
+  }
+</style>
