@@ -1,45 +1,60 @@
 # Release checks, run in order on the final source. Times are UTC.
 
-## 2026-11-21T18:41:38Z npm run build (astro check + astro build)
+## 2026-11-22T11:12:22Z npm run build (astro check + astro build), after removing dist/
 - 0 errors
 - 0 warnings
 - 0 hints
-18:41:40 [build] 8 page(s) built in 398ms
-18:41:40 [build] Complete!
+11:12:24 [build] 8 page(s) built in 398ms
+11:12:24 [build] Complete!
 exit=0
 
-## 2026-11-21T18:41:40Z npm run test:links
-Internal link check passed: 279 internal references across 25 files resolve.
+## build reproducibility: hash of every file in dist/ before and after this rebuild
+before (the build the screenshots were taken from): 92f105a3627869a0
+after: 92f105a3627869a0
+identical
 
-## 2026-11-21T18:41:41Z npm run test:content
-Content safety scan passed: 128 files (27 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
+## built files
+content pages: 7 plus 404.html; legacy redirect pages: 3
 
-## 2026-11-21T18:41:41Z npm run test:contrast
+## 2026-11-22T11:12:24Z npm run test:links
+Internal link check passed: 260 internal references across 15 files resolve.
+
+## 2026-11-22T11:12:24Z npm run test:content
+Content safety scan passed: 150 files (61 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
+
+## 2026-11-22T11:12:25Z npm run test:contrast
 Contrast: 110 text/background pairs checked; lowest 5.03:1 (token teal on log-based-cdc copperSoft).
   log-based-cdc step numeral (surface on copper): 6.12:1
 
-## 2026-11-21T18:41:41Z node src/visuals/log-based-cdc/draw.mjs, twice, then SHA-256 of both SVGs
+## 2026-11-22T11:12:25Z node src/visuals/log-based-cdc/draw.mjs, twice, then SHA-256 of both SVGs
 85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
-52d2fe168a2bf973c35761a28fc1fef6d9b0fbfa67cadcc9622ca4737fc4ff79  src/visuals/log-based-cdc/figure-2.svg
+5e5a47e5996e0678c6ef6362534afa15fafc9c0731df2af57c42f9acb9c89e4e  src/visuals/log-based-cdc/figure-2.svg
 85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
-52d2fe168a2bf973c35761a28fc1fef6d9b0fbfa67cadcc9622ca4737fc4ff79  src/visuals/log-based-cdc/figure-2.svg
+5e5a47e5996e0678c6ef6362534afa15fafc9c0731df2af57c42f9acb9c89e4e  src/visuals/log-based-cdc/figure-2.svg
 
-## built files
-content pages: 7 plus 404.html; top-level legacy redirect pages: 13
-
-## 2026-11-21T18:41:41Z merge_logic_test.py (DuckDB)
-after run 1: [('A', 'v2', False, 102), ('B', 'v1', False, 103)]
-after run 2: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
-re-run of run 2: unchanged
-after run 3: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
-C stays deleted after replayed insert
-null stored position updated by first change
+## 2026-11-22T11:12:25Z merge_logic_test.py (DuckDB)
+1. after run 1: [('A', 'v2', False, 102), ('B', 'v1', False, 103)]
+1. after run 2: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
+1. re-run of run 2: unchanged
+1. after run 3: unchanged, B stays deleted
+1. C stays deleted after a replayed insert
+1. null stored position updated by the first change
+2. raw change LSN as the key: committed update rejected, A stays v0 (wrong, as the entry warns)
+2. commit-ordered key: committed update applied, A = v1; its redelivery changes nothing
+2. two changes in one transaction: the later one wins
+3. without the snapshot rank: the tie check stops the run: [('B', 30050000)]
+3. with the snapshot rank: the streamed change wins, B = v1
+4. exact duplicates at one position: harmless, E = e1
+4. conflicting tie: the run stops before the MERGE: [('E', 700)]
+5. re-snapshot with a low placeholder: the update is rejected, A stays v3 (wrong, as the entry warns)
+5. re-snapshot at its own position: A = v5, but F, deleted during the gap, is still present
+5. rebuild from the snapshot: A = v5 and F is gone
 ALL ASSERTIONS PASSED
 exit=0
 
 
-## 2026-11-21T18:45:02Z after QA_REPORT.md and the last doc edit: npm run test:content
-Content safety scan passed: 133 files (27 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
+## 2026-11-22T11:15:12Z after QA_REPORT.md and the last doc edit: npm run test:content
+Content safety scan passed: 150 files (61 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
 
-## 2026-11-21T18:45:02Z after QA_REPORT.md and the last doc edit: npm run test:links
-Internal link check passed: 279 internal references across 25 files resolve.
+## 2026-11-22T11:15:12Z after QA_REPORT.md and the last doc edit: npm run test:links
+Internal link check passed: 260 internal references across 15 files resolve.

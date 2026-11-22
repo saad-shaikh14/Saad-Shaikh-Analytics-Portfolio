@@ -1,0 +1,415 @@
+{
+  "takenAt": "2026-11-22T11:11:52.493Z",
+  "images": [
+    {
+      "file": "home-desktop.png",
+      "route": "/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "home-mobile.png",
+      "route": "/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "architecture-desktop.png",
+      "route": "/architecture/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "architecture-mobile.png",
+      "route": "/architecture/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "writing-desktop.png",
+      "route": "/writing/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "writing-mobile.png",
+      "route": "/writing/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "about-desktop.png",
+      "route": "/about/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "about-mobile.png",
+      "route": "/about/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Header and footer included."
+    },
+    {
+      "file": "entry-desktop-part-1-of-3.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 1 of 3",
+      "note": "The whole entry."
+    },
+    {
+      "file": "entry-desktop-part-2-of-3.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 2 of 3",
+      "note": "The whole entry."
+    },
+    {
+      "file": "entry-desktop-part-3-of-3.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 3 of 3",
+      "note": "The whole entry."
+    },
+    {
+      "file": "entry-mobile-part-1-of-4.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 1 of 4",
+      "note": "The whole entry; figures scroll sideways inside their frames."
+    },
+    {
+      "file": "entry-mobile-part-2-of-4.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 2 of 4",
+      "note": "The whole entry; figures scroll sideways inside their frames."
+    },
+    {
+      "file": "entry-mobile-part-3-of-4.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 3 of 4",
+      "note": "The whole entry; figures scroll sideways inside their frames."
+    },
+    {
+      "file": "entry-mobile-part-4-of-4.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page, part 4 of 4",
+      "note": "The whole entry; figures scroll sideways inside their frames."
+    },
+    {
+      "file": "entry-figure-1.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: figure.fig",
+      "note": "Figure 1 with its legend, caption and text-description toggle."
+    },
+    {
+      "file": "entry-figure-2.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: figure.fig (#2)",
+      "note": "Figure 2 with its legend, caption and text-description toggle."
+    },
+    {
+      "file": "entry-sql-merge.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: .prose pre",
+      "note": "The example MERGE."
+    },
+    {
+      "file": "entry-sql-tie-check.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: .prose pre (#2)",
+      "note": "The tie check that runs before the MERGE."
+    },
+    {
+      "file": "entry-table-320.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "320 x 800 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: .prose table",
+      "note": "Trade-off table at 320 px."
+    },
+    {
+      "file": "entry-table-375.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: .prose table",
+      "note": "Trade-off table at 375 px."
+    },
+    {
+      "file": "entry-references.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "element: section.sources",
+      "note": "The numbered reference list."
+    },
+    {
+      "file": "figure-1-desktop.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/1/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Full-size figure page, with the link back to the entry."
+    },
+    {
+      "file": "figure-1-mobile.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/1/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Full-size figure page on a phone, scrolled to the left edge."
+    },
+    {
+      "file": "figure-1-mobile-scrolled.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/1/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "The same figure scrolled sideways to its right edge.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/figures/1/"
+    },
+    {
+      "file": "figure-2-desktop.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/2/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Full-size figure page, with the link back to the entry."
+    },
+    {
+      "file": "figure-2-mobile.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/2/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "full page",
+      "note": "Full-size figure page on a phone, scrolled to the left edge."
+    },
+    {
+      "file": "figure-2-mobile-scrolled.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/2/",
+      "viewport": "375 x 812 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "The same figure scrolled sideways to its right edge.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/figures/2/"
+    },
+    {
+      "file": "retired-url-404.png",
+      "route": "/netflixdataset.html",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "A retired 2023 URL gets the 404 page.",
+      "status": 404,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/netflixdataset.html"
+    },
+    {
+      "file": "legacy-redirect-about.png",
+      "route": "/about.html",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "The old about.html lands on the new About page.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/about/"
+    },
+    {
+      "file": "zoom-200-entry-top.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "640 x 400 CSS px",
+      "pixelDensity": 2,
+      "zoom": "200% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry header at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-200-entry-figure-1.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "640 x 400 CSS px",
+      "pixelDensity": 2,
+      "zoom": "200% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to figure-1 at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-200-entry-sql.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "640 x 400 CSS px",
+      "pixelDensity": 2,
+      "zoom": "200% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to sql at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-200-entry-table.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "640 x 400 CSS px",
+      "pixelDensity": 2,
+      "zoom": "200% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to table at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-200-figure-2-page.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/2/",
+      "viewport": "640 x 400 CSS px",
+      "pixelDensity": 2,
+      "zoom": "200% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Full-size figure 2 page at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/figures/2/"
+    },
+    {
+      "file": "zoom-400-entry-top.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "320 x 200 CSS px",
+      "pixelDensity": 4,
+      "zoom": "400% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry header at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-400-entry-figure-1.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "320 x 200 CSS px",
+      "pixelDensity": 4,
+      "zoom": "400% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to figure-1 at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-400-entry-sql.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "320 x 200 CSS px",
+      "pixelDensity": 4,
+      "zoom": "400% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to sql at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-400-entry-table.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/",
+      "viewport": "320 x 200 CSS px",
+      "pixelDensity": 4,
+      "zoom": "400% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Entry scrolled to table at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/"
+    },
+    {
+      "file": "zoom-400-figure-2-page.png",
+      "route": "/architecture/log-based-cdc-into-a-warehouse/figures/2/",
+      "viewport": "320 x 200 CSS px",
+      "pixelDensity": 4,
+      "zoom": "400% of a 1280 x 800 window",
+      "mode": "viewport",
+      "note": "Full-size figure 2 page at this zoom.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/architecture/log-based-cdc-into-a-warehouse/figures/2/"
+    },
+    {
+      "file": "keyboard-skip-link.png",
+      "route": "/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "First Tab: the \"Skip to content\" link appears with the focus ring.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/"
+    },
+    {
+      "file": "keyboard-focus-nav.png",
+      "route": "/",
+      "viewport": "1440 x 900 CSS px",
+      "pixelDensity": 1,
+      "zoom": "100%",
+      "mode": "viewport",
+      "note": "Third Tab: focus ring on the first navigation link.",
+      "status": 200,
+      "landedOn": "/Saad-Shaikh-Analytics-Portfolio/"
+    }
+  ]
+}

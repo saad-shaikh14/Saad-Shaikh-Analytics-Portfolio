@@ -23,22 +23,27 @@ function routes(): string[] {
   return [...out];
 }
 
+// The four old URLs with a real successor (docs/DEPLOYMENT.md, "Legacy URLs").
 const LEGACY: Record<string, string> = {
   'index.html': '/',
   'about.html': '/about/',
   'contactingme.html': '/about/',
   'myprojects.html': '/architecture/',
-  'AnalyzingDatasets.html': '/about/',
-  'VisualisingDatasets.html': '/about/',
-  'CreatingReports.html': '/about/',
-  'amazondataset.html': '/about/',
-  'netflixdataset.html': '/about/',
-  'bcd.html': '/about/',
-  'onecolumn.html': '/',
-  'twocolumn1.html': '/',
-  'twocolumn2.html': '/',
-  'threecolumn.html': '/',
 };
+
+// The ten old URLs retired on 22 Nov 2026: no related page exists, so they must return a 404, not a soft redirect.
+const RETIRED = [
+  'AnalyzingDatasets.html',
+  'VisualisingDatasets.html',
+  'CreatingReports.html',
+  'amazondataset.html',
+  'netflixdataset.html',
+  'bcd.html',
+  'onecolumn.html',
+  'twocolumn1.html',
+  'twocolumn2.html',
+  'threecolumn.html',
+];
 
 const WIDTHS = [320, 375, 768, 1024, 1440, 1920];
 
@@ -115,6 +120,13 @@ for (const [old, target] of Object.entries(LEGACY)) {
     }
     await page.waitForURL(`**${BASE}${target}`, { timeout: 5000 });
     await expect(page.locator('h1')).toHaveCount(1);
+  });
+}
+
+for (const old of RETIRED) {
+  test(`retired URL /${old} returns 404`, async ({ page }) => {
+    const res = await page.goto(`${BASE}/${old}`);
+    expect(res?.status()).toBe(404);
   });
 }
 

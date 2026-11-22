@@ -36,6 +36,12 @@ const articles = defineCollection({
     .refine((d) => !d.updatedDate || d.updatedDate >= d.publicationDate, {
       message: 'updatedDate must not be before publicationDate',
       path: ['updatedDate'],
+    })
+    // The sourcing standard (docs/EDITORIAL_GUIDE.md): a published article lists at least one reference.
+    // Drafts may be incomplete.
+    .refine((d) => d.draft || d.sources.length > 0, {
+      message: 'A published article (draft: false) must list at least one source',
+      path: ['sources'],
     }),
 });
 

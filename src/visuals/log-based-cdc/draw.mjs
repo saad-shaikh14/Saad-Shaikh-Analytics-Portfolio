@@ -306,7 +306,7 @@ function figure2() {
   const B3 = 890; // batch 3 starts
 
   // Lane A: the source log, the truth to converge to
-  b.push(laneTitle(44, 'Source transaction log', 'committed changes, in log order'));
+  b.push(laneTitle(44, 'Source transaction log', 'committed changes, in commit order'));
   const src = [
     [101, 'insert A = v1'],
     [102, 'update A = v2'],
@@ -315,8 +315,8 @@ function figure2() {
     [105, 'delete B'],
   ];
   src.forEach(([p, l], i) => b.push(chip(B1 + i * CS, 56, p, l, { del: l.startsWith('delete') })));
-  b.push(text(B1 + 5 * CS + 8, 78, 'pos = log position (PostgreSQL LSN, or', { cls: 's', size: 12 }));
-  b.push(text(B1 + 5 * CS + 8, 94, 'MySQL binlog file + position + row)', { cls: 's', size: 12 }));
+  b.push(text(B1 + 5 * CS + 8, 78, 'pos = ordering key: commit order, and the same', { cls: 's', size: 12 }));
+  b.push(text(B1 + 5 * CS + 8, 94, 'value if redelivered (built per source; see text)', { cls: 's', size: 12 }));
 
   // Lane B: what the capture delivers to landing, in three batches
   b.push(laneTitle(150, 'Delivered to landing', 'append-only, so duplicates are kept'));

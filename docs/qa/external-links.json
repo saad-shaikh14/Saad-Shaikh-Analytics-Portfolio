@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-11-21T18:43:02.449Z",
-  "total": 29,
-  "ok200": 28,
+  "checkedAt": "2026-11-22T11:13:19.722Z",
+  "total": 32,
+  "ok200": 31,
   "results": [
     {
       "url": "https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax",
@@ -79,6 +79,11 @@
       "method": "HEAD"
     },
     {
+      "url": "https://docs.snowflake.com/en/sql-reference/functions/hash",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
       "url": "https://docs.snowflake.com/en/sql-reference/functions/iff",
       "status": 200,
       "method": "HEAD"
@@ -115,6 +120,16 @@
     },
     {
       "url": "https://www.postgresql.org/docs/current/logicaldecoding-explanation.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/logicaldecoding-streaming.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/protocol-logicalrep-message-formats.html",
       "status": 200,
       "method": "HEAD"
     },

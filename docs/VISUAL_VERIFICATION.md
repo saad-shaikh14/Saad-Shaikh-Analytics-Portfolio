@@ -67,7 +67,8 @@ Every finding is fixed, or recorded with its reason, in `sources.md`.
 ### F. Verify the rendered result
 Inspect the actual rendered output, on desktop and on mobile (the browser tests produce screenshots). Check:
 - every component, label, arrow and connection against `spec.md`;
-- legibility at the smallest size;
+- legibility at the smallest size, and at 200% and 400% zoom;
+- the contrast of every label against what is behind it (`tests/figures.spec.ts` measures this on each full-size figure page);
 - that colour carries meaning only together with shape or text;
 - the caption and the text description.
 

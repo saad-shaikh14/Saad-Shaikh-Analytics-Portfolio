@@ -1,6 +1,6 @@
 # Spec: log-based CDC into an analytical warehouse (figures 1 and 2)
 
-Step B of `docs/VISUAL_VERIFICATION.md`. Written before drawing; the figures were checked against it afterwards. It was updated on 21 Nov 2026 with the changes from the two review rounds in `sources.md`, so it describes the published figures.
+Step B of `docs/VISUAL_VERIFICATION.md`. Written before drawing; the figures were checked against it afterwards. It was updated on 21 Nov 2026 with the changes from the two review rounds, and on 22 Nov 2026 after the pull-request review of the ordering key (see `sources.md`), so it describes the published figures.
 
 ## Figure 1: reference blueprint
 
@@ -61,6 +61,7 @@ Step B of `docs/VISUAL_VERIFICATION.md`. Written before drawing; the figures wer
 
 - **What it explains:** why a capture restart produces duplicates, and how "latest per key by log position" within a batch, plus "apply only if newer" across batches, makes the target converge on the source and stay there.
 - **Scenario:** five committed changes (positions 101 to 105) for keys A and B: insert A = v1, update A = v2, insert B = v1, update A = v3, delete B.
+- **Positions:** the footnote reads "pos = ordering key: commit order, and the same value if redelivered (built per source; see text)". The source lane's subtitle is "committed changes, in commit order". The text defines the key per source (PostgreSQL commit LSN then change LSN; MySQL binlog file, position, snapshot rank and row).
 - **Batches delivered to landing (append-only, so duplicates are kept):**
   - Batch 1 delivers 101 to 103.
   - Batch 2: the capture restarted and resumed after its last committed offset (101), so 102 and 103 arrive again, then 104 and 105.

@@ -23,9 +23,12 @@ npx playwright install chromium         # once
 npx playwright test                     # serves dist/ with `astro preview` under the real base path
 ```
 
-Two further checks are run by hand before a release, because they depend on third parties or on the machine:
+Four further steps are run by hand before a release, because they depend on third parties or on the machine:
 - `node scripts/check-external-links.mjs` writes `docs/qa/external-links.json`;
-- `node scripts/run-lighthouse.mjs`, with `astro preview` running, writes `docs/qa/lighthouse.json`.
+- with `astro preview --host 127.0.0.1 --port 4321` running:
+  - `node scripts/run-lighthouse.mjs` writes `docs/qa/lighthouse.json`;
+  - `node scripts/measure-layout.mjs` writes `docs/qa/measurements.json`;
+  - `node scripts/take-screenshots.mjs` replaces the review screenshots in `docs/qa/screenshots/` and their `manifest.json`.
 
 ### The private-name list
 
@@ -45,21 +48,23 @@ The publication safety scan also checks for private names: employer, client and 
 
 ## Legacy URLs
 
-The old site's 14 pages remain reachable:
+The old site had 14 pages. The four with a real successor still resolve; the other ten are retired.
 
 | Old URL (under the base path) | Now |
 |---|---|
 | `index.html` | the new homepage, served directly |
-| `about.html`, `contactingme.html`, `AnalyzingDatasets.html`, `VisualisingDatasets.html`, `CreatingReports.html`, `amazondataset.html`, `netflixdataset.html`, `bcd.html` | redirect page to `/about/` |
+| `about.html`, `contactingme.html` | redirect page to `/about/` |
 | `myprojects.html` | redirect page to `/architecture/` |
-| `onecolumn.html`, `twocolumn1.html`, `twocolumn2.html`, `threecolumn.html` (template demo pages) | redirect page to `/` |
+| `AnalyzingDatasets.html`, `VisualisingDatasets.html`, `CreatingReports.html`, `amazondataset.html`, `netflixdataset.html`, `bcd.html` (2023 project pages); `onecolumn.html`, `twocolumn1.html`, `twocolumn2.html`, `threecolumn.html` (template demo pages) | **retired**: no file, so the request gets the site's 404 page |
 
-**Redirect pages are not HTTP 301 redirects.** GitHub Pages offers no server-side redirects. Each page in `public/*.html` does three things:
+**Why ten are retired.** None of them has a related page on the new site, so sending them to Home or About would be a "soft 404": a page that answers 200 for content that is gone. Saad chose to remove them entirely (pull-request review, 22 Nov 2026). Their 2023 content stays in the archive below.
+
+**Redirect pages are not HTTP 301 redirects.** GitHub Pages offers no server-side redirects. Each of the three pages in `public/*.html` does three things:
 - an **instant HTML meta refresh**;
 - a `rel=canonical` pointing at the new page, with no `noindex`, so the two signals agree;
 - a visible link, so the page still works without the refresh.
 
-The browser tests open every legacy URL and check where it lands.
+The browser tests open the four kept URLs and check where they land, and request the ten retired ones and check that each gets a 404.
 
 The previous site is preserved:
 - at the tag `legacy-halcyonic-2023`;
@@ -80,29 +85,37 @@ The setting is **Settings → Pages → Build and deployment → Source: GitHub 
 
 ## Cutover (first deployment)
 
-0. **Before the first pull request:** create the `CONTENT_DENYLIST` secret (see "The private-name list"). Without it, the pull request's `verify` job fails by design.
-1. **Approve.** Approve the pull request after reviewing the preview and the QA report.
-2. **Switch the source.** Change the Pages source to **GitHub Actions**. Do this immediately before merging. While the source is still "Deploy from a branch", merging would publish the raw repository root.
-3. **Merge.** Merge the pull request into `main`. The `Site` workflow runs `verify`, then `deploy`.
-4. **Watch.** Follow the run in **Actions**. The deploy job prints the page URL.
+Steps marked **manual** are done by hand in GitHub; the rest happen on their own.
+
+0. **Manual, before the first pull request:** create the `CONTENT_DENYLIST` secret (see "The private-name list"). Without it, the pull request's `verify` job fails by design. Done on 21 Nov 2026.
+1. **Manual: approve.** Approve the pull request after reviewing the preview and the QA report.
+2. **Manual: switch the source.** Settings → Pages → Build and deployment → Source: **GitHub Actions**. Do this immediately before merging: while the source is still "Deploy from a branch" on `main`, merging would publish the raw repository root.
+3. **Manual: merge** the pull request into `main`.
+4. **Automatic:** the push to `main` runs the `Site` workflow: `verify`, then `deploy`. Follow it in **Actions**; the deploy job prints the page URL.
 5. **Verify live:**
    - the home page, Architecture, Writing and About pages;
    - one architecture entry and one figure page;
-   - all 14 legacy URLs;
+   - the four kept legacy URLs, and one retired URL returning the 404 page;
    - `rss.xml` and `sitemap-index.xml`;
    - a mobile check.
 
    Pages serves responses with `max-age=600`, so allow up to 10 minutes for caches to update.
-6. **Record.** Record the deployed commit SHA and the workflow run.
+6. **Record** the deployed commit SHA and the workflow run.
 
 ## Rollback
 
-Use these in order of preference:
+### The first cutover
 
-1. **Re-run the previous successful deployment** (Actions → Site → the run → Re-run jobs). Pages artifacts are kept for 30 days.
+For the first release there is **no previous `Site` deployment to re-run**, and **reverting the merge would also remove the workflow** that deploys. So the rollback is to publish the old site again from its branch. All steps are manual:
+1. Settings → Pages → Build and deployment → Source: **Deploy from a branch**.
+2. Branch **`archive/halcyonic-2023`**, folder **`/ (root)`**, then **Save**. GitHub's documentation: "The source branch can be any branch in your repository."
+3. Wait for the Pages build, then check the home page and one old page. Allow up to 10 minutes for caches.
+
+`archive/halcyonic-2023` is commit `432f7ef`, the same commit `main` holds before this pull request is merged, so this republishes the site exactly as it was. `main` keeps the new source, and nothing deploys from it until the source is switched back to GitHub Actions.
+
+### Later releases
+
+Once a `Site` deployment from `main` has succeeded, use these in order of preference:
+1. **Re-run the previous successful deployment** (Actions → Site → that run → Re-run jobs). Pages artifacts are kept for 30 days.
 2. **`git revert` the change on `main`.** The next workflow run deploys the reverted state.
-3. **Restore the old site entirely:**
-   - set the Pages source back to "Deploy from a branch";
-   - choose branch `archive/halcyonic-2023`, folder `/`.
-
-   That republishes the 2023 site unchanged.
+3. **Restore the old site entirely**, as for the first cutover.

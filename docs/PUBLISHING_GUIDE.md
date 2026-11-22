@@ -29,7 +29,7 @@ sources: []
 
 ## 3. Add references
 
-Every factual claim needs a source. Add each one to `sources`:
+Every factual claim needs a source. Add each one to `sources`. The build refuses an article with `draft: false` and an empty `sources` list:
 
 ```yaml
 sources:

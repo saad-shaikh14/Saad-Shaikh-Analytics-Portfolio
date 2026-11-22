@@ -1,60 +1,65 @@
-# Playwright run 1, 2026-11-21T18:41:47Z UTC: npx playwright test --reporter=list
+# Playwright run 1, 2026-11-22T11:12:32Z UTC: npx playwright test --reporter=list
 
-Running 39 tests using 7 workers
+Running 42 tests using 7 workers
 
-(node:70187) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78621) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70182) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78622) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70184) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70185) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78625) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70186) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78623) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70183) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:70188) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(node:78627) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
 (Use `node --trace-warnings ...` to show where the warning was created)
-  ✓   4 [chromium] › tests/site.spec.ts:51:5 › route /writing/ › loads with one h1, the canonical URL, a description and the page language (353ms)
-  ✓   2 [chromium] › tests/site.spec.ts:51:5 › route / › loads with one h1, the canonical URL, a description and the page language (352ms)
-  ✓   5 [chromium] › tests/site.spec.ts:51:5 › route /architecture/ › loads with one h1, the canonical URL, a description and the page language (362ms)
-  ✓  10 [chromium] › tests/site.spec.ts:51:5 › route /about/ › loads with one h1, the canonical URL, a description and the page language (98ms)
-  ✓   1 [chromium] › tests/site.spec.ts:61:5 › route /architecture/ › has no automatically detectable WCAG 2.2 AA violations (664ms)
-  ✓   8 [chromium] › tests/site.spec.ts:61:5 › route /writing/ › has no automatically detectable WCAG 2.2 AA violations (384ms)
-  ✓   3 [chromium] › tests/site.spec.ts:61:5 › route / › has no automatically detectable WCAG 2.2 AA violations (771ms)
-  ✓   9 [chromium] › tests/site.spec.ts:69:5 › route /writing/ › reflows without page-level horizontal scrolling at every width (418ms)
-  ✓   6 [chromium] › tests/site.spec.ts:69:5 › route /architecture/ › reflows without page-level horizontal scrolling at every width (826ms)
-  ✓  13 [chromium] › tests/site.spec.ts:51:5 › route /architecture/log-based-cdc-into-a-warehouse/ › loads with one h1, the canonical URL, a description and the page language (123ms)
-  ✓  11 [chromium] › tests/site.spec.ts:61:5 › route /about/ › has no automatically detectable WCAG 2.2 AA violations (415ms)
-  ✓  16 [chromium] › tests/site.spec.ts:51:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › loads with one h1, the canonical URL, a description and the page language (102ms)
-  ✓  19 [chromium] › tests/site.spec.ts:51:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › loads with one h1, the canonical URL, a description and the page language (118ms)
-  ✓   7 [chromium] › tests/site.spec.ts:69:5 › route / › reflows without page-level horizontal scrolling at every width (1.1s)
-  ✓  12 [chromium] › tests/site.spec.ts:69:5 › route /about/ › reflows without page-level horizontal scrolling at every width (589ms)
-  ✓  17 [chromium] › tests/site.spec.ts:61:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › has no automatically detectable WCAG 2.2 AA violations (392ms)
-  ✓  22 [chromium] › tests/site.spec.ts:82:1 › keyboard: the first Tab stop is the skip link, and it moves focus to main content (127ms)
-  ✓  20 [chromium] › tests/site.spec.ts:61:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › has no automatically detectable WCAG 2.2 AA violations (383ms)
-  ✓  14 [chromium] › tests/site.spec.ts:61:5 › route /architecture/log-based-cdc-into-a-warehouse/ › has no automatically detectable WCAG 2.2 AA violations (698ms)
-  ✓  24 [chromium] › tests/site.spec.ts:108:3 › legacy URL /index.html resolves to / (85ms)
-  ✓  18 [chromium] › tests/site.spec.ts:69:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › reflows without page-level horizontal scrolling at every width (631ms)
-  ✓  25 [chromium] › tests/site.spec.ts:108:3 › legacy URL /about.html resolves to /about/ (88ms)
-  ✓  26 [chromium] › tests/site.spec.ts:108:3 › legacy URL /contactingme.html resolves to /about/ (85ms)
-  ✓  27 [chromium] › tests/site.spec.ts:108:3 › legacy URL /myprojects.html resolves to /architecture/ (82ms)
-  ✓  23 [chromium] › tests/site.spec.ts:91:1 › navigation links reach every top-level page and mark the current one (336ms)
-  ✓  28 [chromium] › tests/site.spec.ts:108:3 › legacy URL /AnalyzingDatasets.html resolves to /about/ (98ms)
-  ✓  29 [chromium] › tests/site.spec.ts:108:3 › legacy URL /VisualisingDatasets.html resolves to /about/ (94ms)
-  ✓  30 [chromium] › tests/site.spec.ts:108:3 › legacy URL /CreatingReports.html resolves to /about/ (92ms)
-  ✓  31 [chromium] › tests/site.spec.ts:108:3 › legacy URL /amazondataset.html resolves to /about/ (87ms)
-  ✓  32 [chromium] › tests/site.spec.ts:108:3 › legacy URL /netflixdataset.html resolves to /about/ (92ms)
-  ✓  33 [chromium] › tests/site.spec.ts:108:3 › legacy URL /bcd.html resolves to /about/ (95ms)
-  ✓  34 [chromium] › tests/site.spec.ts:108:3 › legacy URL /onecolumn.html resolves to / (96ms)
-  ✓  36 [chromium] › tests/site.spec.ts:108:3 › legacy URL /twocolumn2.html resolves to / (98ms)
-  ✓  35 [chromium] › tests/site.spec.ts:108:3 › legacy URL /twocolumn1.html resolves to / (103ms)
-  ✓  21 [chromium] › tests/site.spec.ts:69:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › reflows without page-level horizontal scrolling at every width (627ms)
-  ✓  38 [chromium] › tests/site.spec.ts:121:1 › the 404 page exists and links home (75ms)
-  ✓  37 [chromium] › tests/site.spec.ts:108:3 › legacy URL /threecolumn.html resolves to / (97ms)
-  ✓  39 [chromium] › tests/site.spec.ts:127:1 › reduced-motion preference is respected (no running animations) (79ms)
-  ✓  15 [chromium] › tests/site.spec.ts:69:5 › route /architecture/log-based-cdc-into-a-warehouse/ › reflows without page-level horizontal scrolling at every width (2.5s)
+  ✓   4 [chromium] › tests/site.spec.ts:56:5 › route /architecture/ › loads with one h1, the canonical URL, a description and the page language (154ms)
+/architecture/log-based-cdc-into-a-warehouse/figures/1/: 72 labels, lowest 6.12:1 ("1")
+/architecture/log-based-cdc-into-a-warehouse/figures/2/: 71 labels, lowest 6.12:1 ("1")
+  ✓   6 [chromium] › tests/site.spec.ts:56:5 › route / › loads with one h1, the canonical URL, a description and the page language (165ms)
+  ✓   2 [chromium] › tests/figures.spec.ts:25:3 › every label in /architecture/log-based-cdc-into-a-warehouse/figures/1/ has at least 4.5:1 contrast against what is behind it (177ms)
+  ✓   3 [chromium] › tests/figures.spec.ts:25:3 › every label in /architecture/log-based-cdc-into-a-warehouse/figures/2/ has at least 4.5:1 contrast against what is behind it (174ms)
+  ✓  10 [chromium] › tests/site.spec.ts:56:5 › route /writing/ › loads with one h1, the canonical URL, a description and the page language (100ms)
+  ✓   1 [chromium] › tests/figures.spec.ts:78:1 › each figure links to its full-size page, and the full-size page links back to it (497ms)
+  ✓   5 [chromium] › tests/site.spec.ts:66:5 › route / › has no automatically detectable WCAG 2.2 AA violations (577ms)
+  ✓   8 [chromium] › tests/site.spec.ts:66:5 › route /architecture/ › has no automatically detectable WCAG 2.2 AA violations (412ms)
+  ✓  11 [chromium] › tests/site.spec.ts:66:5 › route /writing/ › has no automatically detectable WCAG 2.2 AA violations (376ms)
+  ✓  13 [chromium] › tests/site.spec.ts:56:5 › route /about/ › loads with one h1, the canonical URL, a description and the page language (87ms)
+  ✓  12 [chromium] › tests/site.spec.ts:74:5 › route /writing/ › reflows without page-level horizontal scrolling at every width (423ms)
+  ✓   9 [chromium] › tests/site.spec.ts:74:5 › route /architecture/ › reflows without page-level horizontal scrolling at every width (579ms)
+  ✓  16 [chromium] › tests/site.spec.ts:56:5 › route /architecture/log-based-cdc-into-a-warehouse/ › loads with one h1, the canonical URL, a description and the page language (167ms)
+  ✓  18 [chromium] › tests/site.spec.ts:56:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › loads with one h1, the canonical URL, a description and the page language (117ms)
+  ✓   7 [chromium] › tests/site.spec.ts:74:5 › route / › reflows without page-level horizontal scrolling at every width (951ms)
+  ✓  14 [chromium] › tests/site.spec.ts:66:5 › route /about/ › has no automatically detectable WCAG 2.2 AA violations (369ms)
+  ✓  23 [chromium] › tests/site.spec.ts:56:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › loads with one h1, the canonical URL, a description and the page language (124ms)
+  ✓  20 [chromium] › tests/site.spec.ts:66:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › has no automatically detectable WCAG 2.2 AA violations (453ms)
+  ✓  15 [chromium] › tests/site.spec.ts:74:5 › route /about/ › reflows without page-level horizontal scrolling at every width (659ms)
+  ✓  25 [chromium] › tests/site.spec.ts:87:1 › keyboard: the first Tab stop is the skip link, and it moves focus to main content (109ms)
+  ✓  22 [chromium] › tests/site.spec.ts:66:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › has no automatically detectable WCAG 2.2 AA violations (431ms)
+  ✓  27 [chromium] › tests/site.spec.ts:113:3 › legacy URL /index.html resolves to / (95ms)
+  ✓  17 [chromium] › tests/site.spec.ts:66:5 › route /architecture/log-based-cdc-into-a-warehouse/ › has no automatically detectable WCAG 2.2 AA violations (842ms)
+  ✓  28 [chromium] › tests/site.spec.ts:113:3 › legacy URL /about.html resolves to /about/ (82ms)
+  ✓  31 [chromium] › tests/site.spec.ts:127:3 › retired URL /AnalyzingDatasets.html returns 404 (58ms)
+  ✓  29 [chromium] › tests/site.spec.ts:113:3 › legacy URL /contactingme.html resolves to /about/ (89ms)
+  ✓  21 [chromium] › tests/site.spec.ts:74:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/1/ › reflows without page-level horizontal scrolling at every width (679ms)
+  ✓  30 [chromium] › tests/site.spec.ts:113:3 › legacy URL /myprojects.html resolves to /architecture/ (88ms)
+  ✓  26 [chromium] › tests/site.spec.ts:96:1 › navigation links reach every top-level page and mark the current one (323ms)
+  ✓  32 [chromium] › tests/site.spec.ts:127:3 › retired URL /VisualisingDatasets.html returns 404 (55ms)
+  ✓  33 [chromium] › tests/site.spec.ts:127:3 › retired URL /CreatingReports.html returns 404 (54ms)
+  ✓  34 [chromium] › tests/site.spec.ts:127:3 › retired URL /amazondataset.html returns 404 (56ms)
+  ✓  35 [chromium] › tests/site.spec.ts:127:3 › retired URL /netflixdataset.html returns 404 (56ms)
+  ✓  36 [chromium] › tests/site.spec.ts:127:3 › retired URL /bcd.html returns 404 (63ms)
+  ✓  38 [chromium] › tests/site.spec.ts:127:3 › retired URL /twocolumn1.html returns 404 (54ms)
+  ✓  37 [chromium] › tests/site.spec.ts:127:3 › retired URL /onecolumn.html returns 404 (62ms)
+  ✓  39 [chromium] › tests/site.spec.ts:127:3 › retired URL /twocolumn2.html returns 404 (56ms)
+  ✓  40 [chromium] › tests/site.spec.ts:127:3 › retired URL /threecolumn.html returns 404 (55ms)
+  ✓  24 [chromium] › tests/site.spec.ts:74:5 › route /architecture/log-based-cdc-into-a-warehouse/figures/2/ › reflows without page-level horizontal scrolling at every width (607ms)
+  ✓  41 [chromium] › tests/site.spec.ts:133:1 › the 404 page exists and links home (84ms)
+  ✓  42 [chromium] › tests/site.spec.ts:139:1 › reduced-motion preference is respected (no running animations) (82ms)
+  ✓  19 [chromium] › tests/site.spec.ts:74:5 › route /architecture/log-based-cdc-into-a-warehouse/ › reflows without page-level horizontal scrolling at every width (2.8s)
 
-  39 passed (4.9s)
+  42 passed (4.9s)
 exit=0

@@ -39,7 +39,7 @@ For each article or architecture entry:
 - independent sources to cross-check;
 - community discussion (issues, forums) only as a lead, never as the sole source.
 
-Every source is recorded in the entry's `sources` front matter with its publisher, version and access date.
+Every source is recorded in the entry's `sources` front matter with its publisher, version and access date. The build enforces this: an article with `draft: false` and no sources fails the content schema (`src/content.config.ts`), and an architecture entry always needs at least one. Drafts may be incomplete.
 
 ## Article structure
 

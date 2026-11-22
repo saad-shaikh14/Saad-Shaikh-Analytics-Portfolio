@@ -1,7 +1,7 @@
 # Evidence record: log-based CDC figures
 
 - **Steps:** A and G of `docs/VISUAL_VERIFICATION.md`.
-- **Access date:** every source was read on **21 Nov 2026**.
+- **Access date:** every source was read on **21 Nov 2026**, and the PostgreSQL ordering and Snowflake `HASH` sources added after the pull-request review on **22 Nov 2026** (see the last section).
 - **Verification status:** verified on 21 Nov 2026, after two separate review passes (see review notes).
 
 ## Versions in force when verified
@@ -146,4 +146,27 @@ A second review pass checked each round-1 fix. It confirmed findings 1–7, 9–
 
 **Second rules review (21 Nov 2026).** It found five sentences without a row (added above) and one source missing from the entry's reference list, PostgreSQL 19's Write Ahead Log settings (added).
 
-**Verification status: verified, 21 Nov 2026.** Every finding from both figure review rounds and both rules reviews was fixed. Each factual sentence that the reviews checked in the figures and the entry maps to a row in this record, or is labelled as analysis in the text.
+**Pull-request review of the ordering key (22 Nov 2026).**
+
+The review found that the example could be read as safe with a raw PostgreSQL change LSN as the ordering key, and asked for the key to be defined, ties handled and overlapping transactions tested. All of it is fixed:
+- **The key is now defined** in the text: one sortable value per change, commit-ordered for each key, the same on redelivery, and never shared by two different changes to one key.
+- **It is built per source.** PostgreSQL uses the commit LSN, then the change LSN. MySQL uses the binlog file, the position, a snapshot rank and the row. For DMS, the text says that `AR_H_CHANGE_SEQ` is not documented as commit-ordered.
+- **A tie check now runs before the MERGE.** It stops the run if one key has two different changes at one position.
+- **Figure 2's footnote and source-lane subtitle are relabelled** (see `spec.md`).
+- **`merge_logic_test.py` covers the new cases:** a commit after the snapshot point, a snapshot row tied with a streamed change, exact and conflicting ties, and re-snapshots.
+
+| Claim | Source | Verbatim (≤ 25 words) | Read |
+|---|---|---|---|
+| Logical decoding applies changes in commit order | [PostgreSQL 19: Streaming of Large Transactions](https://www.postgresql.org/docs/current/logicaldecoding-streaming.html) | "Even when streaming large transactions, the changes are still applied in commit order, preserving the same guarantees as the non-streaming mode." | 22 Nov 2026 |
+| The replication protocol carries each transaction's commit LSN | [PostgreSQL 19: Logical Replication Message Formats](https://www.postgresql.org/docs/current/protocol-logicalrep-message-formats.html) | Begin: "The final LSN of the transaction." Commit: "The LSN of the commit." | 22 Nov 2026 |
+| Debezium's `lsn` is the change's own position; `sequence` holds the last committed and current LSN | [Debezium PostgreSQL connector](https://debezium.io/documentation/reference/stable/connectors/postgresql.html) | "Offset of the operation in the database log" / "The first value is always the last committed LSN, the second value is always the current LSN." | 21 Nov 2026 |
+| Debezium MySQL snapshot rows share one binlog position | [Debezium MySQL connector](https://debezium.io/documentation/reference/stable/connectors/mysql.html) | "All read events contain the same binlog position, which is the position that was obtained in step 5." | 21 Nov 2026 |
+| InnoDB changes reach the binary log only at commit | [MySQL 8.4: The Binary Log](https://dev.mysql.com/doc/refman/8.4/en/binary-log.html) | "all updates (UPDATE, DELETE, or INSERT) that change transactional tables such as InnoDB tables are cached until a COMMIT statement is received" | 21 Nov 2026 (not re-read) |
+| `HASH` takes several expressions and never returns NULL (used in the tie check) | [Snowflake: HASH](https://docs.snowflake.com/en/sql-reference/functions/hash) | "HASH ( <expr> [ , <expr> ... ] )" / "HASH never returns NULL, even for NULL inputs." | 22 Nov 2026 |
+
+**Labelled as analysis in the text:**
+- that a PostgreSQL change written before the snapshot point but committed after it carries a lower LSN than the snapshot rows, so a guard on raw `lsn` rejects it;
+- that MySQL binlog order follows commit order;
+- that a streamed MySQL change can share the snapshot rows' binlog position.
+
+**Verification status: verified, 22 Nov 2026.** Every finding from both figure review rounds, both rules reviews and the pull-request review was fixed. Each factual sentence that the reviews checked in the figures and the entry maps to a row in this record, or is labelled as analysis in the text.

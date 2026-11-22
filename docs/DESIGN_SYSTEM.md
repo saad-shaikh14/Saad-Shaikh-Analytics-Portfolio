@@ -26,10 +26,13 @@
 | Navy (figures) | `--c-navy` / `--c-navy-soft` | `#1e3a5f` / `#e7ecf2` | Figure strokes, labels and component fills; reference tags |
 | Teal (secondary) | `--c-teal` / `--c-teal-soft` | `#2f6b66` / `#e3efec` | Secondary categorisation; storage in figures |
 
-**Contrast.** Two checks run in CI:
-- **HTML text:** axe-core runs the WCAG 2.2 AA rule set on every content route (`tests/site.spec.ts`).
-- **The palette, including figure text:** axe-core does not check text inside the SVG figures, because it reads CSS `color`, not SVG `fill`. `npm run test:contrast` (`scripts/check-contrast.mjs`) computes the WCAG contrast ratio of every dark text colour against every light background in `tokens.css` and in each figure's palette, plus the light-on-dark pairs (the skip link, and the step numerals on copper), and fails below 4.5:1. On 21 Nov 2026 the lowest pair was teal on the copper tint, 5.03:1. Graphite, the main figure label colour, was at least 7.17:1 on every background, and the ivory step numerals on copper were 6.12:1.
+**Contrast.** Three checks run in CI:
+- **HTML text:** axe-core runs the WCAG 2.2 AA rule set on every content route (`tests/site.spec.ts`). axe-core does not check text inside the SVG figures, because it reads CSS `color`, not SVG `fill`.
+- **Every rendered figure label:** `tests/figures.spec.ts` opens each full-size figure page and measures each label's computed text colour against the colour actually behind it: the topmost filled shape under three points across the label, or the figure panel. It fails below 4.5:1. On 22 Nov 2026: 72 labels in figure 1 and 71 in figure 2, lowest 6.12:1 (the step numerals on copper).
+- **The palette:** `npm run test:contrast` (`scripts/check-contrast.mjs`) computes the ratio of every dark text colour against every light background in `tokens.css` and in each figure's palette, plus the light-on-dark pairs (the skip link, and the step numerals on copper), and fails below 4.5:1. It guards colours a future figure might combine; the lowest pair was teal on the copper tint, 5.03:1.
 - The navy and teal figure strokes meet the 3:1 non-text threshold on their own tints (9.68:1 and 5.22:1).
+
+**What the checks do not cover:** a label that overlaps two shapes is sampled at three points, not at every pixel, and nothing automated judges legibility at high zoom. Those are covered by the rendered screenshots, including 200% and 400% zoom, in `docs/qa/screenshots/`.
 
 **Dark mode** is not provided at launch. The site sets `color-scheme: light`.
 

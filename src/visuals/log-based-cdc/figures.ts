@@ -45,7 +45,7 @@ export const logBasedCdc: Visual = {
       caption:
         'Within a batch, keeping the latest change per key removes duplicates. Across batches, applying a change only if its log position is newer than the stored one stops an old replay from undoing newer data, so the target converges on the source and stays there. Dashed boxes are changes delivered again.',
       description: [
-        'The source log holds five committed changes at positions 101 to 105: insert A = v1, update A = v2, insert B = v1, update A = v3, delete B.',
+        'The source log holds five committed changes at positions 101 to 105: insert A = v1, update A = v2, insert B = v1, update A = v3, delete B. A position here is the ordering key defined in the text: it follows commit order for each key, and a redelivered change keeps the same value.',
         'Batch 1 delivers 101, 102 and 103 to the landing table. Run 1 keeps the latest change per key (A at 102, B at 103); the target has no stored positions yet, so both are applied: A = v2, B = v1.',
         'Step 1: the capture restarts and resumes after its last committed offset, position 101, so batch 2 delivers 102 and 103 again, then 104 and 105. The landing table is append-only and keeps all of them.',
         'Step 2: run 2 keeps the latest change per key, A at 104 and B at 105, so the duplicate rows for 102 and 103 lose inside the batch.',

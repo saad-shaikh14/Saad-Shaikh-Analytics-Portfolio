@@ -1,8 +1,8 @@
 # QA report: redesign release candidate
 
 - **Branch:** `redesign/data-platform-publication`
-- **Checks run:** 21 Nov 2026, 18:41 to 18:44 UTC, on the final source, after its last edit. macOS (arm64), Node 26.11.1 (CI uses Node 24 from `.nvmrc`), Chromium from Playwright 1.65.1.
-- **Order:** the build and every check ran first, and this report was written afterwards. The safety scan and the internal link check were then run again over the finished report (end of `docs/qa/checks.txt`).
+- **Checks run:** 22 Nov 2026, 11:11 to 11:14 UTC, on the final source, after the changes requested in the pull-request review. macOS (arm64), Node 26.11.1 (CI uses Node 24 from `.nvmrc`), Chromium from Playwright 1.65.1.
+- **Order:** the screenshots were taken first. The site was then rebuilt from a clean `dist/`, and the rebuilt output was byte-identical to the build the screenshots show. Every check then ran, then the controls, and this report was written last. The safety scan and the internal link check were run again over the finished report (end of `docs/qa/checks.txt`).
 - **Rule:** every result below comes from a check that was actually run, and each is saved in the file named beside it. Nothing is estimated.
 
 ## Summary
@@ -10,17 +10,19 @@
 | Area | Command | Result | Saved in |
 |---|---|---|---|
 | Type check | `astro check` (part of `npm run build`) | **0 errors, 0 warnings, 0 hints** | `docs/qa/checks.txt` |
-| Production build | `npm run build` | **8 pages** (home, Architecture, the CDC entry, its 2 full-size figure pages, Writing, About, 404) **+ 13 legacy redirect pages + RSS + sitemap**; drafts excluded | `checks.txt` |
-| Internal links | `npm run test:links` | **279 internal references across 25 files resolve** under the base path | `checks.txt` |
-| Publication safety scan | `npm run test:content` | **133 files** (the whole repository and `dist/`, dependencies excluded; 27 binary files checked by path only), **12 private-name rules: no private names in contents or paths, no placeholders or draft markers** | `checks.txt` |
-| Palette contrast | `npm run test:contrast` | **110 text/background pairs, lowest 5.03:1** (teal on the copper tint); step numerals 6.12:1 | `checks.txt` |
-| Browser suite | `npx playwright test` | **39 of 39 passed, in each of two runs** | `docs/qa/playwright-run-1.txt`, `playwright-run-2.txt` |
+| Production build | `npm run build` | **8 pages** (home, Architecture, the CDC entry, its 2 full-size figure pages, Writing, About, 404) **+ 3 legacy redirect pages + RSS + sitemap**; drafts excluded. Rebuilding gives byte-identical output | `checks.txt` |
+| Internal links | `npm run test:links` | **260 internal references across 15 files resolve** under the base path | `checks.txt` |
+| Publication safety scan | `npm run test:content` | **150 files** (the whole repository and `dist/`, dependencies excluded; 61 binary files, mostly screenshots, checked by path only), **12 private-name rules: no private names in contents or paths, no placeholders or draft markers** | `checks.txt` |
+| Palette contrast | `npm run test:contrast` | **110 text/background pairs, lowest 5.03:1** (teal on the copper tint) | `checks.txt` |
+| Figure label contrast | `tests/figures.spec.ts` (browser suite) | **Every rendered label against the colour behind it: 72 labels in figure 1 and 71 in figure 2, lowest 6.12:1** (the step numerals on copper) | `docs/qa/playwright-run-1.txt`, `playwright-run-2.txt` |
+| Browser suite | `npx playwright test` | **42 of 42 passed, in each of two runs** | the same two files |
 | Accessibility, automated | axe-core 4.14 inside the browser suite, tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` | **0 violations on each of the 7 content routes** | the same two files |
 | Lighthouse 12.8.2, mobile defaults | `node scripts/run-lighthouse.mjs` | Home: **Performance 96, Accessibility 100, Best Practices 100, SEO 100** (LCP 2.3 s, CLS 0.002, TBT 0 ms). Architecture entry: **94 / 100 / 100 / 100** (LCP 2.4 s, CLS 0.072, TBT 0 ms) | `docs/qa/lighthouse.json` |
-| External links | `node scripts/check-external-links.mjs` | **29 checked; 28 return 200.** LinkedIn returns 999, its standard response to automated clients | `docs/qa/external-links.json` |
+| External links | `node scripts/check-external-links.mjs` | **32 checked; 31 return 200.** LinkedIn returns 999, its standard response to automated clients | `docs/qa/external-links.json` |
 | Layout | `node scripts/measure-layout.mjs` | The entry's table keeps native table display and fits its column at 320 px (272 px in 272 px) and 375 px. The figure scrolls at 1240 px and not at 1244 px; its scroll hint shows up to 1248 px | `docs/qa/measurements.json` |
-| Figure merge logic | `python src/visuals/log-based-cdc/merge_logic_test.py` (DuckDB) | **All assertions pass** | `checks.txt` |
+| CDC merge logic | `python src/visuals/log-based-cdc/merge_logic_test.py` (DuckDB) | **All assertions pass** across the figure 2 runs, a PostgreSQL commit after the snapshot point, a MySQL snapshot tie, exact and conflicting ties, and re-snapshots | `checks.txt` |
 | Figure source | `node src/visuals/log-based-cdc/draw.mjs`, run twice | Both SVGs regenerate **byte for byte** (identical SHA-256) | `checks.txt` |
+| Screenshots | `node scripts/take-screenshots.mjs` | **42 images**: every main page at 1440 and 375 px, the entry in full and in close-ups, both figure pages (including scrolled sideways on a phone), the 404 and a kept redirect, 200% and 400% zoom, and keyboard focus | `docs/qa/screenshots/`, described in `manifest.json` |
 
 The build prints a warning that the `articles` collection is empty. That is expected: no article is published yet.
 
@@ -36,68 +38,80 @@ Saved in `docs/qa/controls.txt`.
 | Publication safety scan | `REQUIRE_DENYLIST=true` with no list | Fails, as CI does if the secret is missing |
 | Publication safety scan | An invalid rule in the list | Fails, naming the rule number only |
 | Palette contrast | Graphite lightened to `#a8a29a` | Fails: 9 pairs below 4.5:1 |
+| Figure label contrast | The default figure label colour set to `#b5aea4` | Fails: lowest 1.85:1 in figure 1 and 1.8:1 in figure 2 |
 | Figure publication gate | Figure 2 set to `in-review`, production build | Build stops: "only verified figures can be published" |
 | Figure publication gate | The same, with `INCLUDE_DRAFTS=true` | Draft build completes, as intended |
+| Source rule | A published article with no sources | Build stops: "A published article (draft: false) must list at least one source" |
+| Source rule | The same article as a draft | Build completes, as intended |
 
-Every control was reverted, and the changed files were compared with their originals afterwards.
+Every control was reverted, the changed files were compared with their originals afterwards, and the site was rebuilt. The rebuilt output had the same hash as before the controls.
 
-## What the browser suite covers (`tests/site.spec.ts`)
+## What the browser suite covers
 
-The 7 content routes are discovered from the build: `/`, `/architecture/`, the CDC entry, its two figure pages, `/writing/` and `/about/`.
+`tests/site.spec.ts`, over the 7 content routes discovered from the build (`/`, `/architecture/`, the CDC entry, its two figure pages, `/writing/` and `/about/`):
 1. Each route: status 200, exactly one `h1`, the correct canonical URL with the base path, a meta description over 50 characters, and `lang="en-GB"`.
-2. Each route has no automatically detectable WCAG 2.2 AA violations (axe). axe checks HTML text. Text inside the SVG figures is covered by the contrast check instead, because axe reads CSS `color`, not SVG `fill`.
-3. Each route at **320, 375, 768, 1024, 1440 and 1920 px**: no page-level horizontal scrolling. A full-page screenshot is saved for each width.
+2. Each route has no automatically detectable WCAG 2.2 AA violations (axe). axe checks HTML text, not SVG text.
+3. Each route at **320, 375, 768, 1024, 1440 and 1920 px**: no page-level horizontal scrolling.
 4. Keyboard: the first Tab stop is "Skip to content", and Enter moves focus to `<main>`.
 5. Navigation: each main nav link reaches its page and sets `aria-current="page"`.
-6. **All 14 legacy URLs:**
-   - `index.html` serves the new homepage directly;
-   - the other 13 land on their mapped pages.
+6. **Legacy URLs:** `index.html` serves the new homepage; `about.html`, `contactingme.html` and `myprojects.html` land on their successors; the 10 retired URLs return 404.
 7. The 404 page exists and links home.
 8. With `prefers-reduced-motion: reduce`, no animation is running once the home page has loaded.
 
-axe does not run on the 404 page or the 13 legacy redirect pages.
+`tests/figures.spec.ts`:
+9. Every label in each full-size figure page has at least 4.5:1 contrast against the colour behind it.
+10. Each figure's "Open full size" link reaches its figure page, and "Back to the entry" returns to the figure.
 
-## Defects found during QA and fixed
+axe does not run on the 404 page or the 3 legacy redirect pages.
+
+## Changes from the pull-request review (22 Nov 2026)
+
+| Review item | Change | Evidence |
+|---|---|---|
+| 1. CDC ordering | The entry defines `log_position` as a commit-ordered key, the same on redelivery and never shared by two changes to one key, and says how to build it for MySQL, PostgreSQL and DMS. A tie check runs before the MERGE. Figure 2's footnote and source-lane subtitle are relabelled | `merge_logic_test.py` output in `checks.txt`; sources quoted in `src/visuals/log-based-cdc/sources.md` |
+| 2. First-cutover rollback | The first release's rollback is switching Pages back to the `archive/halcyonic-2023` branch; re-run and revert apply only to later releases | `docs/DEPLOYMENT.md` |
+| 3. Legacy URLs | 10 URLs with no related page are retired (404); 4 keep their successors | browser suite; `retired-url-404.png`, `legacy-redirect-about.png` |
+| 4. Source rule | A published article must list at least one source; drafts may not | controls 10 and 11 |
+| 5. Figure contrast | Every rendered label is now checked against the colour behind it, alongside the palette check; zoom evidence added | browser suite; controls 6 and 7; `zoom-*.png` |
+| 6. Writing | Launch with the honest empty Writing page; promote the site after the first article. Home now links the RSS feed | `home-*.png`, `writing-*.png` |
+
+## Defects found earlier and fixed
 
 | Found by | Defect | Fix |
 |---|---|---|
 | Internal link check | The 404 page declared a canonical URL; the RSS channel link pointed at the domain root | 404 has no canonical; RSS channel link points at the site home under the base path |
-| Visual review | Astro 7 compresses HTML and dropped the spaces between figure-caption parts ("Figure 1.Reference…"); the brand name and subtitle, and each reference title and its publisher, ran together for screen readers | Explicit spaces added |
+| Visual review | Astro 7 compresses HTML and dropped spaces between caption parts, the brand name and subtitle, and reference titles and publishers | Explicit spaces added |
 | Visual review | No sign on phones that figures scroll sideways; legend labels wrapped | A visible scroll hint; legend labels kept on one line |
-| Browser suite (reduced motion) | The reduced-motion rule set every transition to 0.01 ms, which created tiny transitions when fonts loaded | Transitions and animations are now switched off entirely under reduced motion |
-| axe | Syntax-highlighting keywords (`#d73a49`) were 4.49:1 on the code background, just under AA | Code theme changed to GitHub Light High Contrast; 0 violations |
-| Separate figure review passes (two rounds) | 24 round-1 and 14 round-2 findings on the CDC figures and entry, including the example SQL's null handling, unqualified claims and missing caveats | All fixed. See `src/visuals/log-based-cdc/sources.md` |
-| Rules review, round 1 | The private-name list sat in the public scan script | Moved to a gitignored local file and a repository secret; the scan reports rule numbers only. It was never committed |
-| Rules review, round 1 | Writing, home and About copy described essays that do not exist, and About and home went beyond the agreed facts | Copy now describes only what is published; the Writing page says it has no articles at the moment |
-| Rules review, round 1 | A figure's `in-review` status could be bypassed by rendering it directly | `Figure.astro` stops a production build for any unverified figure (controls above) |
-| Rules reviews, rounds 1 and 2 | Entry accuracy: the DMS duplicate sentence had lost its `DO_NOTHING` condition; a TOAST "around 8 KB" figure; eight sentences and six sources unrecorded | Fixed and quoted in `sources.md` |
-| Rules review, round 1 | Duplicate SVG marker ids when both figures are on one page | Marker ids prefixed per figure in `draw.mjs` |
-| Rules review, round 1 | Tables used `display: block`, which can drop table semantics | Native table display; cells wrap with hyphenation (measured above) |
-| Rules review, round 1 | `noindex` on redirect pages contradicted their `rel=canonical` | `noindex` removed |
-| Rules review, round 1 | CI scanned only `src` and `public`; checkout persisted credentials; no job timeouts | CI scans the whole repository and the build, does not persist credentials, and has 20- and 10-minute timeouts |
-| Rules review, round 2 | This report contained a phrase the safety scan forbids, so the scan failed | Reworded; the scan's own failure labels no longer contain the phrase, so saved logs pass |
-| Rules review, round 2 | The scan read only some file types and never checked file paths | Every file's path is checked, and every non-binary file's contents; a matching path is withheld from the output |
-| Rules review, round 2 | A CSS rule turned figure 2's copper batch notes graphite | The default applies only where the SVG sets no fill |
-| Rules review, round 2 | The scroll hint stopped at 72rem, but the figure scrolls up to about 1242 px | Hint shown up to 78rem (measured above) |
+| Browser suite | The reduced-motion rule created tiny transitions when fonts loaded | Transitions and animations switched off entirely under reduced motion |
+| axe | Syntax-highlighting keywords were 4.49:1 on the code background | Code theme changed to GitHub Light High Contrast |
+| Separate figure review passes (two rounds) | 24 and 14 findings on the CDC figures and entry | All fixed; see `src/visuals/log-based-cdc/sources.md` |
+| Rules reviews (two rounds) | Among others: the private-name list in the public script, copy describing essays that do not exist, a bypassable figure gate, unrecorded claims, duplicate SVG ids, table semantics, a scan that missed file paths, figure 2's notes losing their colour, the scroll-hint breakpoint | All fixed; the private-name list was never committed |
 
 ## Manual checks
 
-- **Screenshots reviewed** at desktop and phone widths for Home, Architecture, the CDC entry (top, both figures, code block, the trade-off table at 320 px), Writing and About. A curated set, taken from the final build, is in `docs/qa/screenshots/`.
-- **Figure legibility.** The smallest figure label renders at 12 px or more at each figure's declared minimum width (1160 px). Narrower screens scroll the figure, with a hint, a full-size page and a numbered text description.
+- **Screenshots reviewed:** the 42 images in `docs/qa/screenshots/`. At 200% and 400% zoom:
+  - the page reflows into one column, and prose and tables wrap;
+  - code blocks keep their line length and scroll sideways inside their own frame, so at 400% a long line runs past the visible edge until it is scrolled;
+  - figures keep their size and scroll sideways inside their frame, with the hint and the full-size link;
+  - the browser suite confirms there is no page-level horizontal scrolling at 320 px, the width 400% zoom produces.
+- **Figure legibility:** the smallest figure label renders at 12 px or more at each figure's declared minimum width (1160 px).
 
 ## Not done, or limits
 
-- **No screen-reader session** (VoiceOver) and no 200% or 400% browser zoom pass. The semantics are covered by axe and the keyboard test, but a manual screen-reader pass is still recommended.
-- **Lighthouse was run on a local static server.** GitHub Pages adds its own compression and caching (`max-age=600`), so live scores will differ. They will be re-read after deployment.
-- **No field data (CrUX).** The site has no traffic history at this URL for the new pages.
-- **The article layout has not been exercised by a published article,** because no article is published yet. It shares the figure, reference, code and prose components that the architecture entry exercises.
-- **The MySQL 8.4 manual pages** cited by the entry were read during research, and their links return 200 (`external-links.json`), but their text was not re-read for the final review. The entry's other sources were re-read on 21 Nov 2026.
-- **The base path is written out** in the legacy redirect pages, `scripts/check-links.mjs`, `tests/site.spec.ts`, `playwright.config.ts`, `scripts/run-lighthouse.mjs` and `scripts/measure-layout.mjs`, as well as in `astro.config.mjs`. Renaming the repository, which is not planned, would need all of them changed.
+- **Zoom is simulated,** as a smaller viewport at a higher pixel density: 640 x 400 at 2x for 200%, and 320 x 200 at 4x for 400%, of a 1280 x 800 window. That is how browser zoom changes the layout viewport, but it is not a session in a real browser's zoom control.
+- **No screen-reader session** (VoiceOver). The semantics are covered by axe and the keyboard tests.
+- **The per-label contrast check samples three points across each label,** not every pixel.
+- **Lighthouse was run on a local static server.** GitHub Pages adds its own compression and caching (`max-age=600`), so live scores will differ.
+- **No field data (CrUX).** The new pages have no traffic history.
+- **The article layout has not been exercised by a published article,** because none is published yet.
+- **The MySQL 8.4 manual pages** cited by the entry were read during research, and their links return 200 (`external-links.json`), but their text was not re-read for the final review. The entry's other sources were re-read on 21 or 22 Nov 2026.
+- **The base path is written out** in the legacy redirect pages, `scripts/check-links.mjs`, `tests/site.spec.ts`, `tests/figures.spec.ts`, `playwright.config.ts`, `scripts/run-lighthouse.mjs`, `scripts/measure-layout.mjs` and `scripts/take-screenshots.mjs`, as well as in `astro.config.mjs`. Renaming the repository, which is not planned, would need all of them changed.
 
 ## Deployment readiness
 
-Ready for review. Cutover needs Saad's approval of the preview, then:
-1. Make sure the `CONTENT_DENYLIST` repository secret exists (it is created before the pull request is opened).
-2. Switch the Pages source to GitHub Actions.
-3. Merge.
-4. Verify live, as described in `docs/DEPLOYMENT.md`.
+Ready for review. The cutover and rollback steps, with the manual ones marked, are in `docs/DEPLOYMENT.md`. In short:
+1. The `CONTENT_DENYLIST` repository secret exists (created 21 Nov 2026).
+2. Manual: switch the Pages source to GitHub Actions, immediately before merging.
+3. Manual: merge. The workflow verifies and deploys.
+4. Verify live.
+5. If the first release must be rolled back: switch Pages back to "Deploy from a branch", `archive/halcyonic-2023`, folder `/`.

@@ -8,14 +8,14 @@
   <marker id="cdc-f2-head-ctl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#4f4a44" stroke-width="1.5"/></marker>
   <marker id="cdc-f2-dot-meta" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6"><circle cx="5" cy="5" r="4" fill="#2f6b66"/></marker>
 </defs>
-<line x1="16" y1="22" x2="1144" y2="22" stroke="#b9ab94" stroke-width="1"/><text x="16" y="44" class="n" font-size="15">Source transaction log</text><text x="236" y="44" class="s" font-size="13">committed changes, in log order</text>
+<line x1="16" y1="22" x2="1144" y2="22" stroke="#b9ab94" stroke-width="1"/><text x="16" y="44" class="n" font-size="15">Source transaction log</text><text x="236" y="44" class="s" font-size="13">committed changes, in commit order</text>
 <rect x="16" y="56" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="26" y="76" class="e" font-size="12">pos 101</text><text x="26" y="96" class="s" font-size="13">insert A = v1</text>
 <rect x="138" y="56" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="148" y="76" class="e" font-size="12">pos 102</text><text x="148" y="96" class="s" font-size="13">update A = v2</text>
 <rect x="260" y="56" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="270" y="76" class="e" font-size="12">pos 103</text><text x="270" y="96" class="s" font-size="13">insert B = v1</text>
 <rect x="382" y="56" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="392" y="76" class="e" font-size="12">pos 104</text><text x="392" y="96" class="s" font-size="13">update A = v3</text>
 <rect x="504" y="56" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="514" y="76" class="e" font-size="12">pos 105</text><text x="514" y="96" class="s" font-size="13" fill="#7a3915" font-weight="700">delete B</text>
-<text x="634" y="78" class="s" font-size="12">pos = log position (PostgreSQL LSN, or</text>
-<text x="634" y="94" class="s" font-size="12">MySQL binlog file + position + row)</text>
+<text x="634" y="78" class="s" font-size="12">pos = ordering key: commit order, and the same</text>
+<text x="634" y="94" class="s" font-size="12">value if redelivered (built per source; see text)</text>
 <line x1="16" y1="128" x2="1144" y2="128" stroke="#b9ab94" stroke-width="1"/><text x="16" y="150" class="n" font-size="15">Delivered to landing</text><text x="236" y="150" class="s" font-size="13">append-only, so duplicates are kept</text>
 <rect x="16" y="164" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="26" y="184" class="e" font-size="12">pos 101</text><text x="26" y="204" class="s" font-size="13">insert A = v1</text>
 <rect x="138" y="164" width="112" height="52" rx="4" fill="#e7ecf2" stroke="#1e3a5f" stroke-width="1.5"/><text x="148" y="184" class="e" font-size="12">pos 102</text><text x="148" y="204" class="s" font-size="13">update A = v2</text>

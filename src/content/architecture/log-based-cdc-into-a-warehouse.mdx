@@ -14,7 +14,7 @@ visual: log-based-cdc
 reviewStatus: verified
 draft: false
 publicationDate: 2026-11-21
-lastReviewed: 2026-11-21
+lastReviewed: 2026-11-22
 tags: [cdc, ingestion, warehouses, reliability]
 sources:
   - title: "47.2 Logical Decoding Concepts"
@@ -37,6 +37,16 @@ sources:
     publisher: "PostgreSQL Global Development Group"
     version: "PostgreSQL 19"
     accessed: 2026-11-21
+  - title: "47.10 Streaming of Large Transactions for Logical Decoding (commit order)"
+    url: "https://www.postgresql.org/docs/current/logicaldecoding-streaming.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-22
+  - title: "54.9 Logical Replication Message Formats (commit LSN)"
+    url: "https://www.postgresql.org/docs/current/protocol-logicalrep-message-formats.html"
+    publisher: "PostgreSQL Global Development Group"
+    version: "PostgreSQL 19"
+    accessed: 2026-11-22
   - title: "PostgreSQL 19 release notes"
     url: "https://www.postgresql.org/docs/current/release-19.html"
     publisher: "PostgreSQL Global Development Group"
@@ -110,6 +120,10 @@ sources:
     url: "https://docs.snowflake.com/en/sql-reference/constructs/qualify"
     publisher: "Snowflake Documentation"
     accessed: 2026-11-21
+  - title: "HASH"
+    url: "https://docs.snowflake.com/en/sql-reference/functions/hash"
+    publisher: "Snowflake Documentation"
+    accessed: 2026-11-22
   - title: "IFF"
     url: "https://docs.snowflake.com/en/sql-reference/functions/iff"
     publisher: "Snowflake Documentation"
@@ -219,9 +233,12 @@ WHEN NOT MATCHED THEN
 
 **What the sketch assumes.**
 
-- **Positions are present and sortable.**
-  - Every row has a position. Debezium's snapshot rows carry the position recorded at the snapshot. AWS DMS full-load rows carry none, so for an initial load the landing step gives them a value that sorts below any streamed change for the same key.
-  - On MySQL, `log_position` has to be a single sortable value built from the binlog file sequence, the position and the row number.
+- **`log_position` is a commit-ordered key, not a raw field.** It is one sortable value, built when rows land, with three properties:
+  1. for any one key, it increases in the order the source committed the changes;
+  2. a change delivered twice gets the same value both times;
+  3. two different changes to the same key never share a value.
+
+  What to build it from depends on the source; see "Order by a commit-ordered position" below. Rows with no position, such as AWS DMS full-load rows, get a value that ranks below any streamed change for the same key.
 - **Row images are complete.**
   - In PostgreSQL, Debezium leaves values stored with TOAST (PostgreSQL's storage for large field values) out of an update event when they have not changed, unless they are part of the table's replica identity.
   - Either set `REPLICA IDENTITY FULL` on captured tables, or keep the stored value when such a column is missing. Otherwise `UPDATE SET value = s.value` overwrites it.
@@ -229,17 +246,38 @@ WHEN NOT MATCHED THEN
 - **No row is skipped between runs.** Choosing which landing rows a run reads needs care: a row stamped before the previous run's cut-off but committed after it would be skipped. Re-reading a small overlap is safe, because the position check ignores anything that is not newer.
 - **Deletes for unseen keys are still written.** A delete for a key the target has never seen is written as a deleted marker with its position, for the reason given under "Deletes are a choice".
 
-Before publishing it, I ran this logic in DuckDB, with `CASE` in place of `IFF`, against every run in figure 2, an insert and delete of a new key in one batch, and rows with missing keys or positions.
+Before publishing it, I ran the check and the merge in DuckDB, with `CASE` in place of `IFF`. The scenarios were:
+- every run in figure 2;
+- an insert and delete of a new key in one batch;
+- rows with missing keys or positions;
+- a PostgreSQL transaction that commits after the snapshot point, keyed by the raw change LSN (the committed update is wrongly rejected) and by the commit-ordered key (it is applied);
+- a MySQL snapshot row and a streamed change at the same binlog coordinates, without and with the snapshot rank;
+- an exact redelivered duplicate, and a conflicting tie, which stops the run;
+- a re-snapshot, at a low placeholder position, at the snapshot's own position, and as a rebuild.
 
-### Order by log position, not by timestamps
+### Order by a commit-ordered position, not by timestamps
 
-The log position is what both PostgreSQL and Debezium point to for ordering changes and spotting repeats:
-- PostgreSQL describes a replication slot as replaying changes in the order they were made on the origin server.
+In this entry, "log position" means the key defined under "What the sketch assumes": commit-ordered for each key, the same on redelivery, and never shared by two different changes to one key. Positions from the source's log are what both PostgreSQL and Debezium point to for ordering changes and spotting repeats:
+- PostgreSQL describes a replication slot as replaying changes in the order they were made on the origin server, and says logical decoding applies changes in commit order.
 - Debezium suggests tracking the LSN to decide whether an event is a duplicate.
 
-Two details matter:
+A raw position is not always that key by itself, so build it per source:
+- **MySQL.** For InnoDB tables, MySQL caches a transaction's changes until it commits, so a transaction reaches the binary log only at commit. My reading is that binlog order therefore follows commit order. A single binlog position is not enough, because several rows share one binlog event: build the key from the binlog file's sequence number, the position and the row number together. Debezium gives every snapshot row the same binlog position, read during the snapshot. I assume a streamed change can carry that same position, so rank snapshot rows below streamed changes at equal coordinates.
+- **PostgreSQL.** Debezium's `lsn` field is where each change was written in the log, not where its transaction committed. Transactions overlap, so a change can be written before a point in the log and committed after it. My analysis, tested below: a change written before the snapshot point but committed after it carries a lower `lsn` than the snapshot's rows, and a guard on the raw `lsn` would reject a committed update. PostgreSQL's replication protocol sends each transaction's commit LSN, so build the key from the commit LSN first and the change's own `lsn` second. Snapshot rows take the snapshot's position. Debezium also records a `sequence` field holding "the last committed LSN" and the current LSN. Check what your connector version puts there before using it as the key.
+- **AWS DMS.** Full-load rows carry no position. For changes, AWS describes `AR_H_CHANGE_SEQ` as a unique incrementing number made of a timestamp and a counter. It does not say that the number follows commit order, so check that for your source before relying on it.
+
+Two more details matter:
 - **Debezium's top-level `ts_ms` is not a commit time.** It is when the connector processed the event, on the connector's clock.
-- **In MySQL, a single binlog position is not a total order.** Several rows share one binlog event, so order needs the binlog file, the position and the row number together.
+- **Equal positions need a rule.** Identical rows at the same position are redelivered duplicates and are harmless. Different rows at the same position for one key mean the key is not unique, and no merge rule can pick the right one, so each run first checks for them and stops if it finds any:
+
+```sql
+-- Snowflake SQL. Run before the MERGE; expect no rows. Any row returned stops the run.
+SELECT key, log_position
+FROM landing_changes
+WHERE load_id > :window_start
+GROUP BY key, log_position
+HAVING COUNT(DISTINCT HASH(op, value)) > 1;
+```
 
 AWS DMS takes a different route for change files written to S3: it documents a column holding each change's source commit timestamp (`TimestampColumnName`) for reconstructing order. For full-load rows that column holds the time DMS transferred the row, not a commit time. Changes in the same transaction share a commit time, and timestamps can tie at the clock's resolution, while a log position does not tie. So I prefer the position wherever one is available. That preference is my reasoning, not a documented rule.
 
@@ -278,7 +316,7 @@ Re-running a batch changes nothing, and the target converges on the source once 
 
 **When convergence holds.** It depends on at least these conditions, all reasoned from the sources rather than stated by them:
 1. Every captured table has a primary key.
-2. Positions for a key only increase.
+2. The log position is a commit-ordered key, as defined above, and the check for equal positions finds nothing.
 3. Row images are complete. On PostgreSQL that means accounting for TOAST.
 4. The changes are ones the log carries, so no cascade deletes and no truncates.
 5. No change is lost to event-log or file retention, and no landing row is skipped between runs.

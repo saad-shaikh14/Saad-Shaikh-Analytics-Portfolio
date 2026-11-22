@@ -1,5 +1,5 @@
-# Controls: each check shown to fail when it should. 2026-11-21T18:43:19Z UTC.
-# Control files are created under .qa-controls/ and deleted afterwards; their contents are never printed.
+# Controls: each check shown to fail when it should. Started 2026-11-22T11:13:47Z UTC.
+# Control files live under .qa-controls/ or are temporary edits; all are removed or reverted afterwards, and contents are never printed.
 
 ## 1. Safety scan, a file whose content holds a private name
 Content safety scan FAILED: 1 problem(s) in 1 files
@@ -24,23 +24,37 @@ exit=1
 Content safety scan FAILED: private-name rule(s) #2 are not valid regular expressions.
 exit=1
 
-## 6. Contrast, graphite lightened to #a8a29a
+## 6. Palette contrast, graphite lightened to #a8a29a
 Contrast check FAILED: 9 pair(s) below 4.5:1
   - token graphite on log-based-cdc copperSoft: 2.07:1
   - token graphite on token navy-soft: 2.13:1
-  - token graphite on log-based-cdc navySoft: 2.13:1
-  (and the remaining pairs below 4.5:1)
+  (and the other pairs below 4.5:1)
 exit=1
 
-## 7. Figure gate, figure 2 set to in-review, production build
+## 7. Per-label figure contrast, the default figure label colour set to #b5aea4 in Figure.astro, then the browser test
+/architecture/log-based-cdc-into-a-warehouse/figures/1/: 72 labels, lowest 1.85:1 ("LOG")
+/architecture/log-based-cdc-into-a-warehouse/figures/2/: 71 labels, lowest 1.8:1 ("pos 102")
+exit=1
+
+## 8. Figure gate, figure 2 set to in-review, production build
 Figure 2 for "log-based-cdc-into-a-warehouse" has status "in-review"; only verified figures can be published.
 exit=1
 
-## 8. Figure gate, the same with INCLUDE_DRAFTS=true
-exit=0
+## 9. Figure gate, the same with INCLUDE_DRAFTS=true
 8 page(s) built
+exit=0
 
-## Restore check
+## 10. Source rule, a published article (draft: false) with no sources
+A published article (draft: false) must list at least one source
+exit=1
+
+## 11. Source rule, the same article as a draft
+8 page(s) built
+exit=0
+
+## Restore check, 2026-11-22T11:13:54Z
 tokens.css identical to original
 figures.ts identical to original
+Figure.astro identical to original
+control article removed
 .content-denylist back in place
