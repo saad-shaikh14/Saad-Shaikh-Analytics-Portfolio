@@ -207,4 +207,9 @@ hr {
   .section {
     padding-block: var(--s-7);
   }
+
+  /* On narrow screens a long link may wrap, so it never widens the page, even before the web fonts load. */
+  .text-link {
+    white-space: normal;
+  }
 }

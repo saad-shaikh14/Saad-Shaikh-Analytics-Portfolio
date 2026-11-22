@@ -353,7 +353,7 @@ Re-running a batch changes nothing, and the target converges on the source once 
 
 | Concern | What this design gives | What it costs |
 |---|---|---|
-| Reliability | Convergence under duplicate delivery, replays and re-runs | Position columns and guard conditions on every table |
+| Reliability | Conver&shy;gence under duplicate delivery, replays and re-runs | Position columns and guard conditions on every table |
 | Freshness | Minutes, set by the run schedule | Not suited to sub-second serving |
 | Source impact | No polling queries after the snapshot; reads the log | Replication privileges, log retention to watch, and an initial snapshot that reads every table (with locks on MySQL) |
 | Cost | Only changed rows move after the snapshot | A landing layer to store and prune |

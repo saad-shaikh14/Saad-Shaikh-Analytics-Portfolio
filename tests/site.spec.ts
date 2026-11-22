@@ -75,11 +75,21 @@ for (const route of routes()) {
       for (const width of WIDTHS) {
         await page.setViewportSize({ width, height: 900 });
         await page.goto(`${BASE}${route}`);
+        await page.evaluate(() => document.fonts.ready); // measure the page as readers see it once fonts load
         expect(await noPageLevelOverflow(page), `overflow at ${width}px`).toBe(true);
         mkdirSync(SHOTS, { recursive: true });
         const name = route === '/' ? 'home' : route.replace(/^\/|\/$/g, '').replace(/\//g, '__');
         await page.screenshot({ path: `${SHOTS}/${name}--${width}.png`, fullPage: true });
       }
+    });
+
+    // Fonts load with font-display: swap, so a slow connection first shows the system fallback font, which is wider on
+    // some systems (the CI runner's Linux fallback is). The page must not widen in that state either.
+    test('reflows at 320 px with the web fonts blocked (fallback fonts only)', async ({ page }) => {
+      await page.route(/\.woff2?$/, (r) => r.abort());
+      await page.setViewportSize({ width: 320, height: 900 });
+      await page.goto(`${BASE}${route}`);
+      expect(await noPageLevelOverflow(page), 'overflow at 320px with fallback fonts').toBe(true);
     });
   });
 }

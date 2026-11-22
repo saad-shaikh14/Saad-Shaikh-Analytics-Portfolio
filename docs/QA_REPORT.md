@@ -1,7 +1,7 @@
 # QA report: redesign release candidate
 
 - **Branch:** `redesign/data-platform-publication`
-- **Checks run:** 22 Nov 2026, 11:11 to 11:14 UTC, on the final source, after the changes requested in the pull-request review. macOS (arm64), Node 26.11.1 (CI uses Node 24 from `.nvmrc`), Chromium from Playwright 1.65.1.
+- **Checks run:** 22 Nov 2026, 11:23 to 11:25 UTC, on the final source, after the changes requested in the pull-request review and the fix for the CI failure described below. macOS (arm64), Node 26.11.1 (CI uses Node 24 from `.nvmrc`), Chromium from Playwright 1.65.1.
 - **Order:** the screenshots were taken first. The site was then rebuilt from a clean `dist/`, and the rebuilt output was byte-identical to the build the screenshots show. Every check then ran, then the controls, and this report was written last. The safety scan and the internal link check were run again over the finished report (end of `docs/qa/checks.txt`).
 - **Rule:** every result below comes from a check that was actually run, and each is saved in the file named beside it. Nothing is estimated.
 
@@ -15,7 +15,7 @@
 | Publication safety scan | `npm run test:content` | **150 files** (the whole repository and `dist/`, dependencies excluded; 61 binary files, mostly screenshots, checked by path only), **12 private-name rules: no private names in contents or paths, no placeholders or draft markers** | `checks.txt` |
 | Palette contrast | `npm run test:contrast` | **110 text/background pairs, lowest 5.03:1** (teal on the copper tint) | `checks.txt` |
 | Figure label contrast | `tests/figures.spec.ts` (browser suite) | **Every rendered label against the colour behind it: 72 labels in figure 1 and 71 in figure 2, lowest 6.12:1** (the step numerals on copper) | `docs/qa/playwright-run-1.txt`, `playwright-run-2.txt` |
-| Browser suite | `npx playwright test` | **42 of 42 passed, in each of two runs** | the same two files |
+| Browser suite | `npx playwright test` | **49 of 49 passed, in each of two runs** | the same two files |
 | Accessibility, automated | axe-core 4.14 inside the browser suite, tags `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, `wcag22aa` | **0 violations on each of the 7 content routes** | the same two files |
 | Lighthouse 12.8.2, mobile defaults | `node scripts/run-lighthouse.mjs` | Home: **Performance 96, Accessibility 100, Best Practices 100, SEO 100** (LCP 2.3 s, CLS 0.002, TBT 0 ms). Architecture entry: **94 / 100 / 100 / 100** (LCP 2.4 s, CLS 0.072, TBT 0 ms) | `docs/qa/lighthouse.json` |
 | External links | `node scripts/check-external-links.mjs` | **32 checked; 31 return 200.** LinkedIn returns 999, its standard response to automated clients | `docs/qa/external-links.json` |
@@ -51,7 +51,7 @@ Every control was reverted, the changed files were compared with their originals
 `tests/site.spec.ts`, over the 7 content routes discovered from the build (`/`, `/architecture/`, the CDC entry, its two figure pages, `/writing/` and `/about/`):
 1. Each route: status 200, exactly one `h1`, the correct canonical URL with the base path, a meta description over 50 characters, and `lang="en-GB"`.
 2. Each route has no automatically detectable WCAG 2.2 AA violations (axe). axe checks HTML text, not SVG text.
-3. Each route at **320, 375, 768, 1024, 1440 and 1920 px**: no page-level horizontal scrolling.
+3. Each route at **320, 375, 768, 1024, 1440 and 1920 px**: no page-level horizontal scrolling once the fonts have loaded, and none at 320 px with the web fonts blocked, when only the system's fallback font is shown.
 4. Keyboard: the first Tab stop is "Skip to content", and Enter moves focus to `<main>`.
 5. Navigation: each main nav link reaches its page and sets `aria-current="page"`.
 6. **Legacy URLs:** `index.html` serves the new homepage; `about.html`, `contactingme.html` and `myprojects.html` land on their successors; the 10 retired URLs return 404.
@@ -74,6 +74,7 @@ axe does not run on the 404 page or the 3 legacy redirect pages.
 | 4. Source rule | A published article must list at least one source; drafts may not | controls 10 and 11 |
 | 5. Figure contrast | Every rendered label is now checked against the colour behind it, alongside the palette check; zoom evidence added | browser suite; controls 6 and 7; `zoom-*.png` |
 | 6. Writing | Launch with the honest empty Writing page; promote the site after the first article. Home now links the RSS feed | `home-*.png`, `writing-*.png` |
+| CI on the first fix commit | CI failed on two pages at 320 px: Home and the CDC entry. The failure depends on whether the web fonts load before the reflow check runs; the CI runner's Linux fallback font is wider. A no-wrap link on Home and the entry's trade-off table could then widen the page. On narrow screens, links now wrap and tables use a fixed layout, and one long word gets a soft hyphen. A new test checks every page at 320 px with the web fonts blocked, and the main reflow test waits for the fonts | browser suite (7 new fallback-font tests); `entry-table-320.png` |
 
 ## Defects found earlier and fixed
 

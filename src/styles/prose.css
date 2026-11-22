@@ -88,8 +88,10 @@
 }
 
 @media (max-width: 40rem) {
+  /* Fixed layout keeps the table inside its column whatever the font: cells share the width and wrap within it. */
   .prose table {
     font-size: 0.9em;
+    table-layout: fixed;
   }
 
   .prose th,

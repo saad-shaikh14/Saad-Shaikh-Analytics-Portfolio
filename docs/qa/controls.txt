@@ -1,4 +1,4 @@
-# Controls: each check shown to fail when it should. Started 2026-11-22T11:13:47Z UTC.
+# Controls: each check shown to fail when it should. Started 2026-11-22T11:24:57Z UTC.
 # Control files live under .qa-controls/ or are temporary edits; all are removed or reverted afterwards, and contents are never printed.
 
 ## 1. Safety scan, a file whose content holds a private name
@@ -52,7 +52,7 @@ exit=1
 8 page(s) built
 exit=0
 
-## Restore check, 2026-11-22T11:13:54Z
+## Restore check, 2026-11-22T11:25:04Z
 tokens.css identical to original
 figures.ts identical to original
 Figure.astro identical to original

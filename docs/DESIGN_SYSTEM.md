@@ -125,6 +125,8 @@ Each shape carries a small mono kicker word naming its type.
 The layout is checked at 320, 375, 768, 1024, 1440 and 1920 px by the browser tests in `tests/site.spec.ts`:
 - there is no page-level horizontal scrolling;
 - screenshots at every width are produced for review;
-- tables keep native table display and wrap cell text on narrow screens;
+- tables keep native table display and wrap cell text; below 40rem they use a fixed layout, so they fit their column in any font;
+- below 40rem, links that normally stay on one line may wrap;
+- the page also reflows at 320 px before the web fonts load, with only the system fallback font (tested with the fonts blocked);
 - code blocks keep their lines and scroll sideways inside their frame;
 - figures scroll sideways within their frame.

@@ -1,38 +1,38 @@
 # Release checks, run in order on the final source. Times are UTC.
 
-## 2026-11-22T11:12:22Z npm run build (astro check + astro build), after removing dist/
+## 2026-11-22T11:24:13Z npm run build (astro check + astro build), after removing dist/
 - 0 errors
 - 0 warnings
 - 0 hints
-11:12:24 [build] 8 page(s) built in 398ms
-11:12:24 [build] Complete!
+11:24:16 [build] 8 page(s) built in 404ms
+11:24:16 [build] Complete!
 exit=0
 
 ## build reproducibility: hash of every file in dist/ before and after this rebuild
-before (the build the screenshots were taken from): 92f105a3627869a0
-after: 92f105a3627869a0
+before (the build the screenshots were taken from): 7cf51df792bac5dc
+after: 7cf51df792bac5dc
 identical
 
 ## built files
 content pages: 7 plus 404.html; legacy redirect pages: 3
 
-## 2026-11-22T11:12:24Z npm run test:links
+## 2026-11-22T11:24:16Z npm run test:links
 Internal link check passed: 260 internal references across 15 files resolve.
 
-## 2026-11-22T11:12:24Z npm run test:content
+## 2026-11-22T11:24:16Z npm run test:content
 Content safety scan passed: 150 files (61 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
 
-## 2026-11-22T11:12:25Z npm run test:contrast
+## 2026-11-22T11:24:16Z npm run test:contrast
 Contrast: 110 text/background pairs checked; lowest 5.03:1 (token teal on log-based-cdc copperSoft).
   log-based-cdc step numeral (surface on copper): 6.12:1
 
-## 2026-11-22T11:12:25Z node src/visuals/log-based-cdc/draw.mjs, twice, then SHA-256 of both SVGs
+## 2026-11-22T11:24:17Z node src/visuals/log-based-cdc/draw.mjs, twice, then SHA-256 of both SVGs
 85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
 5e5a47e5996e0678c6ef6362534afa15fafc9c0731df2af57c42f9acb9c89e4e  src/visuals/log-based-cdc/figure-2.svg
 85226539da21ed227122bbef988a19ab8b5b703f1d1fb952d2798ae0bee4e241  src/visuals/log-based-cdc/figure-1.svg
 5e5a47e5996e0678c6ef6362534afa15fafc9c0731df2af57c42f9acb9c89e4e  src/visuals/log-based-cdc/figure-2.svg
 
-## 2026-11-22T11:12:25Z merge_logic_test.py (DuckDB)
+## 2026-11-22T11:24:17Z merge_logic_test.py (DuckDB)
 1. after run 1: [('A', 'v2', False, 102), ('B', 'v1', False, 103)]
 1. after run 2: [('A', 'v3', False, 104), ('B', 'v1', True, 105)]
 1. re-run of run 2: unchanged
@@ -52,9 +52,8 @@ Contrast: 110 text/background pairs checked; lowest 5.03:1 (token teal on log-ba
 ALL ASSERTIONS PASSED
 exit=0
 
-
-## 2026-11-22T11:15:12Z after QA_REPORT.md and the last doc edit: npm run test:content
+## 2026-11-22T11:25:32Z after QA_REPORT.md and the last doc edit: npm run test:content
 Content safety scan passed: 150 files (61 binary, checked by path only), 12 private-name rules, no placeholders or draft markers.
 
-## 2026-11-22T11:15:12Z after QA_REPORT.md and the last doc edit: npm run test:links
+## 2026-11-22T11:25:32Z after QA_REPORT.md and the last doc edit: npm run test:links
 Internal link check passed: 260 internal references across 15 files resolve.
