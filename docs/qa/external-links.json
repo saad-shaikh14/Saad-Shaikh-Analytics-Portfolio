@@ -1,0 +1,167 @@
+{
+  "checkedAt": "2026-11-22T11:24:35.685Z",
+  "total": 32,
+  "ok200": 31,
+  "results": [
+    {
+      "url": "https://cloud.google.com/bigquery/docs/reference/standard-sql/dml-syntax",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/blog/2018/07/19/advantages-of-log-based-change-data-capture/",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/documentation/reference/stable/configuration/eos.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/documentation/reference/stable/connectors/mysql.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/documentation/reference/stable/connectors/postgresql.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/documentation/reference/stable/features.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://debezium.io/releases/3.7/",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://dev.mysql.com/doc/refman/8.4/en/binary-log.html",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "https://dev.mysql.com/doc/refman/8.4/en/innodb-and-mysql-replication.html",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql-stored-proc-configuring.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Monitoring.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Target.S3.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Task.CDC.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.SelectionTransformation.Expressions.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.snowflake.com/en/sql-reference/constructs/qualify",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.snowflake.com/en/sql-reference/functions/hash",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.snowflake.com/en/sql-reference/functions/iff",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://docs.snowflake.com/en/sql-reference/sql/merge",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://github.com/saad-shaikh14",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://kafka.apache.org/44/design/design/",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://kafka.apache.org/44/getting-started/introduction/",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.linkedin.com/in/saad--shaikh/",
+      "status": 999,
+      "method": "GET"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/18/logicaldecoding-example.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/logicaldecoding-explanation.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/logicaldecoding-streaming.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/protocol-logicalrep-message-formats.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/release-19.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/runtime-config-replication.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/runtime-config-wal.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/sql-createpublication.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/storage-toast.html",
+      "status": 200,
+      "method": "HEAD"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/current/view-pg-replication-slots.html",
+      "status": 200,
+      "method": "HEAD"
+    }
+  ]
+}

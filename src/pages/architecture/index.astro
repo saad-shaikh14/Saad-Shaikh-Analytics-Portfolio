@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { ARCHITECTURE_TYPES } from '../../data/site';
+import { publishedArchitecture } from '../../utils/content';
+import { url } from '../../utils/url';
+
+const entries = await publishedArchitecture();
+---
+
+<BaseLayout
+  title="Architecture"
+  description="A library of reference architectures, architecture decisions, engineering patterns and visual explainers for modern data platforms, each built from cited sources."
+>
+  <section class="container-wide page-intro" aria-labelledby="arch-title">
+    <p class="eyebrow">Architecture library</p>
+    <h1 id="arch-title">Architecture</h1>
+    <p class="lede">
+      Diagrams and explanations of how data platforms fit together and how they fail. Every figure here is drawn from
+      cited documentation and reviewed before it is published. Each entry states its assumptions, and reference
+      architectures are labelled as such: they describe a possible design, not a specific deployment.
+    </p>
+  </section>
+
+  <section class="container-wide formats" aria-labelledby="formats-title">
+    <h2 id="formats-title" class="visually-hidden">Kinds of entry</h2>
+    <dl class="formats__list">
+      {
+        Object.values(ARCHITECTURE_TYPES).map((t) => (
+          <div class="formats__item">
+            <dt>{t.label}</dt>
+            <dd>{t.blurb}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="container-wide entries" aria-labelledby="entries-title">
+    <h2 id="entries-title">Entries</h2>
+    {
+      entries.map((e) => (
+        <EntryCard
+          href={url(`/architecture/${e.id}/`)}
+          title={e.data.title}
+          summary={e.data.summary}
+          kicker={ARCHITECTURE_TYPES[e.data.architectureType].label}
+          date={e.data.publicationDate}
+        />
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-intro {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .page-intro h1 {
+    margin: 0 0 var(--s-4);
+  }
+
+  .formats__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--s-5);
+    margin: 0;
+    padding: var(--s-5) 0 var(--s-7);
+  }
+
+  .formats__item {
+    border-left: 2px solid var(--c-rule-strong);
+    padding-left: var(--s-4);
+  }
+
+  .formats__item dt {
+    font-weight: 700;
+    margin-bottom: var(--s-2);
+  }
+
+  .formats__item dd {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--c-graphite);
+  }
+
+  .entries h2 {
+    font-size: var(--step-2);
+  }
+
+  @media (max-width: 64rem) {
+    .formats__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .formats__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

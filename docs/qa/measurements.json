@@ -1,0 +1,56 @@
+{
+  "measuredAt": "2026-11-22T11:23:34.987Z",
+  "table": [
+    {
+      "viewport": 320,
+      "display": "table",
+      "tableWidth": 272,
+      "columnWidth": 272,
+      "pageScrollWidth": 320
+    },
+    {
+      "viewport": 375,
+      "display": "table",
+      "tableWidth": 327,
+      "columnWidth": 327,
+      "pageScrollWidth": 375
+    }
+  ],
+  "figure": [
+    {
+      "viewport": 1200,
+      "scrolls": true,
+      "hintVisible": true
+    },
+    {
+      "viewport": 1236,
+      "scrolls": true,
+      "hintVisible": true
+    },
+    {
+      "viewport": 1240,
+      "scrolls": true,
+      "hintVisible": true
+    },
+    {
+      "viewport": 1244,
+      "scrolls": false,
+      "hintVisible": true
+    },
+    {
+      "viewport": 1248,
+      "scrolls": false,
+      "hintVisible": true
+    },
+    {
+      "viewport": 1250,
+      "scrolls": false,
+      "hintVisible": false
+    },
+    {
+      "viewport": 1280,
+      "scrolls": false,
+      "hintVisible": false
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+---
+import type { FigureMeta } from '../visuals/types';
+import { includeDrafts } from '../utils/content';
+import { url } from '../utils/url';
+
+interface Props {
+  figure: FigureMeta;
+  /** Architecture entry slug, used for the full-size view link. */
+  entry: string;
+  /** Hide the full-size link (used on the full-size page itself). */
+  standalone?: boolean;
+  /** Prefix for the <figure> element's own id only. The inlined SVG's ids are fixed per figure, so a given figure may
+   *  appear at most once on a page. */
+  idPrefix?: string;
+}
+
+const { figure, entry, standalone = false, idPrefix = 'figure' } = Astro.props;
+
+// Publication gate: a figure that has not passed visual verification never reaches a production build,
+// however it is referenced (docs/VISUAL_VERIFICATION.md). Draft and QA builds may render it.
+if (figure.status !== 'verified' && !includeDrafts) {
+  throw new Error(`Figure ${figure.number} for "${entry}" has status "${figure.status}"; only verified figures can be published.`);
+}
+const Diagram = figure.component;
+const id = `${idPrefix}-${figure.number}`;
+---
+
+<figure class:list={['fig', { 'fig--standalone': standalone }]} id={id} style={`--fig-min:${figure.minWidth}px`}>
+  <p class="fig__hint">Scroll sideways to see the whole figure, or open it full size.</p>
+  <div class="fig__scroll" role="region" tabindex="0" aria-label={`Figure ${figure.number}: ${figure.title}. On narrow screens, scroll sideways or open the full-size view.`}>
+    <div class="fig__canvas">
+      <Diagram />
+    </div>
+  </div>
+  {
+    figure.legend.length > 0 && (
+      <dl class="fig__legend">
+        {figure.legend.map((l) => (
+          <div class="fig__legend-item">
+            <dt>
+              <span class:list={['swatch', `swatch--${l.swatch}`]} aria-hidden="true" />
+              {l.term}
+            </dt>
+            <dd>{l.meaning}</dd>
+          </div>
+        ))}
+      </dl>
+    )
+  }
+  <figcaption class="fig__caption">
+    <span class="fig__number">Figure {figure.number}.</span>{' '}
+    <span class="fig__title">{figure.title}.</span>{' '}
+    {figure.caption}
+    {
+      !standalone && (
+        <>
+          {' '}
+          <a class="fig__enlarge" href={url(`/architecture/${entry}/figures/${figure.number}/`)}>
+            Open full size<span class="visually-hidden">: figure {figure.number}</span>
+          </a>
+        </>
+      )
+    }
+  </figcaption>
+  <details class="fig__details">
+    <summary>Text description of figure {figure.number}</summary>
+    <ol>
+      {figure.description.map((step) => <li>{step}</li>)}
+    </ol>
+    <p class="fig__source-note">{figure.sourceNote}</p>
+  </details>
+</figure>
+
+<style>
+  .fig {
+    margin: var(--s-7) 0;
+    max-width: none;
+  }
+
+  .fig__scroll {
+    overflow-x: auto;
+    background: var(--c-surface);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    padding: var(--s-4);
+  }
+
+  .fig__canvas {
+    min-width: var(--fig-min, 44rem);
+  }
+
+  .fig__canvas :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .fig__canvas :global(svg text) {
+    font-family: var(--f-body);
+  }
+
+  .fig__canvas :global(svg .k),
+  .fig__canvas :global(svg .e) {
+    font-family: var(--f-mono);
+  }
+
+  /* Graphite is the default; a fill set in the SVG itself (such as figure 2's copper batch notes) wins. */
+  .fig__canvas :global(svg .k:not([fill])),
+  .fig__canvas :global(svg .e:not([fill])) {
+    fill: var(--c-graphite);
+  }
+
+  .fig__canvas :global(svg .k) {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .fig__canvas :global(svg .n) {
+    font-weight: 700;
+    fill: var(--c-ink);
+  }
+
+  .fig__canvas :global(svg .s:not([fill])) {
+    fill: var(--c-graphite);
+  }
+
+  .fig__caption {
+    margin-top: var(--s-3);
+    font-size: 0.95rem;
+    color: var(--c-graphite);
+    max-width: var(--measure);
+  }
+
+  .fig__number {
+    font-weight: 700;
+    color: var(--c-ink);
+  }
+
+  .fig__title {
+    font-weight: 700;
+    color: var(--c-ink);
+  }
+
+  .fig__enlarge {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .fig__details {
+    margin-top: var(--s-3);
+    max-width: var(--measure);
+    font-size: 0.95rem;
+  }
+
+  .fig__details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--c-ink);
+    min-height: 1.5rem;
+  }
+
+  .fig__details ol {
+    margin-top: var(--s-3);
+    padding-left: 1.4em;
+  }
+
+  .fig__details li + li {
+    margin-top: var(--s-2);
+  }
+
+  .fig__source-note {
+    color: var(--c-graphite);
+    font-size: var(--step--1);
+  }
+
+  .fig__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin: var(--s-3) 0 0;
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  .fig__legend-item {
+    display: flex;
+    gap: var(--s-2);
+    align-items: baseline;
+  }
+
+  .fig__legend dt {
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--c-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+  }
+
+  .fig__legend dd {
+    margin: 0;
+  }
+
+  .fig__hint {
+    display: none;
+    margin: 0 0 var(--s-2);
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  /* The figure scrolls whenever the viewport is narrower than its 1160 px canvas plus the frame's padding and border
+     and the page gutters (about 1242 px), so the hint shows up to 78rem (1248 px). */
+  @media (max-width: 78rem) {
+    .fig__hint {
+      display: block;
+    }
+  }
+
+  .swatch {
+    display: inline-block;
+    width: 1.75rem;
+    height: 0;
+    border-top: 2px solid var(--c-navy);
+  }
+
+  .swatch--control {
+    border-top: 1.5px dashed var(--c-graphite);
+  }
+
+  .swatch--metadata {
+    border-top: 2px dotted var(--c-teal);
+  }
+
+  .swatch--highlight {
+    border-top: 3px solid var(--c-copper);
+  }
+
+  .swatch--step {
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 0;
+    border-radius: 3px;
+    background: var(--c-copper);
+  }
+
+  .swatch--trust {
+    height: 0.8rem;
+    border: 1.5px dashed var(--c-navy);
+  }
+
+  .swatch--system {
+    height: 0.8rem;
+    border: 1px solid var(--c-graphite);
+    border-radius: 3px;
+  }
+</style>

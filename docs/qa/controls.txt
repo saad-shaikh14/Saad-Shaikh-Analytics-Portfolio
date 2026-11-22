@@ -1,0 +1,60 @@
+# Controls: each check shown to fail when it should. Started 2026-11-22T11:24:57Z UTC.
+# Control files live under .qa-controls/ or are temporary edits; all are removed or reverted afterwards, and contents are never printed.
+
+## 1. Safety scan, a file whose content holds a private name
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - .qa-controls/private-name.md: private-name rule #1
+exit=1
+
+## 2. Safety scan, a file whose path holds a private name (path must be withheld)
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - a file path matches private-name rule #1
+exit=1
+
+## 3. Safety scan, a file announcing unpublished content
+Content safety scan FAILED: 1 problem(s) in 1 files
+  - .qa-controls/announcement.md: announcement of unpublished content
+exit=1
+
+## 4. Safety scan, REQUIRE_DENYLIST=true with no list
+Content safety scan FAILED: REQUIRE_DENYLIST is set but no private-name list was provided (CONTENT_DENYLIST).
+exit=1
+
+## 5. Safety scan, an invalid rule in the list (pattern must not be printed)
+Content safety scan FAILED: private-name rule(s) #2 are not valid regular expressions.
+exit=1
+
+## 6. Palette contrast, graphite lightened to #a8a29a
+Contrast check FAILED: 9 pair(s) below 4.5:1
+  - token graphite on log-based-cdc copperSoft: 2.07:1
+  - token graphite on token navy-soft: 2.13:1
+  (and the other pairs below 4.5:1)
+exit=1
+
+## 7. Per-label figure contrast, the default figure label colour set to #b5aea4 in Figure.astro, then the browser test
+/architecture/log-based-cdc-into-a-warehouse/figures/1/: 72 labels, lowest 1.85:1 ("LOG")
+/architecture/log-based-cdc-into-a-warehouse/figures/2/: 71 labels, lowest 1.8:1 ("pos 102")
+exit=1
+
+## 8. Figure gate, figure 2 set to in-review, production build
+Figure 2 for "log-based-cdc-into-a-warehouse" has status "in-review"; only verified figures can be published.
+exit=1
+
+## 9. Figure gate, the same with INCLUDE_DRAFTS=true
+8 page(s) built
+exit=0
+
+## 10. Source rule, a published article (draft: false) with no sources
+A published article (draft: false) must list at least one source
+exit=1
+
+## 11. Source rule, the same article as a draft
+8 page(s) built
+exit=0
+
+## Restore check, 2026-11-22T11:25:04Z
+tokens.css identical to original
+figures.ts identical to original
+Figure.astro identical to original
+control article removed
+.content-denylist back in place

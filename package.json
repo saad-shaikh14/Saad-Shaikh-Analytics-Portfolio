@@ -1,0 +1,37 @@
+{
+  "name": "saad-shaikh-site",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Saad Shaikh: Inside Modern Data Systems. A personal publication on data engineering, data platform architecture and AI.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build",
+    "build:qa": "INCLUDE_DRAFTS=true astro build --outDir dist-qa",
+    "preview": "astro preview",
+    "test:links": "node scripts/check-links.mjs dist",
+    "test:content": "node scripts/check-content.mjs",
+    "test:contrast": "node scripts/check-contrast.mjs",
+    "test:e2e": "playwright test",
+    "qa": "npm run build && npm run test:links && npm run test:content && npm run test:contrast && npm run test:e2e"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "8.1.6",
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.6",
+    "@fontsource-variable/atkinson-hyperlegible-next": "5.3.0",
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/literata": "5.3.0",
+    "astro": "7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.12",
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.65.1",
+    "typescript": "6.0.3"
+  }
+}

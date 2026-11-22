@@ -1,0 +1,31 @@
+{
+  "server": "astro preview (local)",
+  "runs": [
+    {
+      "path": "/",
+      "lighthouseVersion": "12.8.2",
+      "formFactor": "mobile",
+      "fetchTime": "2026-11-22T11:23:43.143Z",
+      "performance": 96,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": "2.3 s",
+      "cls": "0.002",
+      "tbt": "0 ms"
+    },
+    {
+      "path": "/architecture/log-based-cdc-into-a-warehouse/",
+      "lighthouseVersion": "12.8.2",
+      "formFactor": "mobile",
+      "fetchTime": "2026-11-22T11:23:53.270Z",
+      "performance": 94,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcp": "2.4 s",
+      "cls": "0.072",
+      "tbt": "0 ms"
+    }
+  ]
+}

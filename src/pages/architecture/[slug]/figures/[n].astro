@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Figure from '../../../../components/Figure.astro';
+import { publishedArchitecture } from '../../../../utils/content';
+import { url } from '../../../../utils/url';
+import { figuresFor } from '../../../../visuals';
+
+export async function getStaticPaths() {
+  const entries = await publishedArchitecture();
+  return entries.flatMap((entry) =>
+    figuresFor(entry.data.visual).map((figure) => ({
+      params: { slug: entry.id, n: String(figure.number) },
+      props: { entry, figure },
+    })),
+  );
+}
+
+const { entry, figure } = Astro.props;
+---
+
+<BaseLayout
+  title={`Figure ${figure.number}: ${figure.title}`}
+  description={`Full-size view of figure ${figure.number} from “${entry.data.title}”.`}
+  noindex
+>
+  <section class="container-wide figure-page" aria-labelledby="figure-page-title">
+    <p class="eyebrow">
+      <a href={url(`/architecture/${entry.id}/`)}>{entry.data.title}</a>
+    </p>
+    <h1 id="figure-page-title">Figure {figure.number}: {figure.title}</h1>
+    <Figure figure={figure} entry={entry.id} standalone />
+    <p><a class="text-link" href={url(`/architecture/${entry.id}/#figure-${figure.number}`)}>Back to the entry</a></p>
+  </section>
+</BaseLayout>
+
+<style>
+  .figure-page {
+    padding-block: var(--s-7);
+  }
+
+  .figure-page h1 {
+    font-size: var(--step-3);
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { CATEGORY_LABELS } from '../../data/site';
+import { publishedArticles } from '../../utils/content';
+import { url } from '../../utils/url';
+
+const articles = await publishedArticles();
+// The copy describes only what is published: with no articles, the page says so and points to the library.
+const description =
+  articles.length > 0
+    ? 'Long-form articles by Saad Shaikh on data engineering, data platform architecture and AI, each with its sources and the date it was last updated.'
+    : 'Long-form writing by Saad Shaikh on data engineering, data platform architecture and AI. Everything published so far is in the architecture library.';
+---
+
+<BaseLayout title="Writing" description={description}>
+  <section class="container-wide page-intro" aria-labelledby="writing-title">
+    <p class="eyebrow">Writing</p>
+    <h1 id="writing-title">Writing</h1>
+    <div class="measure intro">
+      <p class="lede">This section is for long-form articles on data engineering, data platform architecture and AI.</p>
+      <p>
+        The standard for every article here: start from an engineering question, work from current primary sources and
+        list them, separate what has been announced from what has been documented, demonstrated or measured, and show
+        when it was last updated.
+      </p>
+      {
+        articles.length > 0 ? (
+          <p>
+            Follow new articles with the <a href={url('/rss.xml')}>RSS feed</a>.
+          </p>
+        ) : (
+          <p>
+            There are no articles in this section at the moment. Everything published so far is in the{' '}
+            <a href={url('/architecture/')}>architecture library</a>, and the <a href={url('/rss.xml')}>RSS feed</a> lists
+            each new entry.
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    articles.length > 0 && (
+      <section class="container-wide" aria-labelledby="articles-title">
+        <h2 id="articles-title" class="visually-hidden">
+          Articles
+        </h2>
+        {articles.map((a) => (
+          <EntryCard
+            href={url(`/writing/${a.id}/`)}
+            title={a.data.title}
+            summary={a.data.summary}
+            kicker={CATEGORY_LABELS[a.data.category]}
+            date={a.data.publicationDate}
+            headingLevel="h3"
+          />
+        ))}
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-intro {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .page-intro h1 {
+    margin: 0 0 var(--s-4);
+  }
+
+  .intro p:last-child {
+    color: var(--c-graphite);
+  }
+</style>

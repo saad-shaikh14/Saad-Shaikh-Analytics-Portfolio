@@ -1,0 +1,81 @@
+---
+import { formatDate, isoDate } from '../utils/content';
+
+interface Props {
+  href: string;
+  title: string;
+  summary: string;
+  kicker: string;
+  date: Date;
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { href, title, summary, kicker, date, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<article class="entry-card">
+  <p class="entry-card__kicker">{kicker}</p>
+  <Heading class="entry-card__title"><a href={href}>{title}</a></Heading>
+  <p class="entry-card__summary">{summary}</p>
+  <p class="entry-card__date"><time datetime={isoDate(date)}>{formatDate(date)}</time></p>
+</article>
+
+<style>
+  .entry-card {
+    position: relative;
+    padding: var(--s-5) 0 var(--s-5);
+    border-top: 1px solid var(--c-rule);
+  }
+
+  .entry-card__kicker {
+    margin: 0 0 var(--s-2);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-navy);
+  }
+
+  .entry-card__title {
+    margin: 0;
+    font-size: var(--step-2);
+  }
+
+  .entry-card__title a {
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+
+  .entry-card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .entry-card__title a:hover {
+    color: var(--c-copper);
+  }
+
+  .entry-card:focus-within {
+    outline: 2px solid var(--c-copper);
+    outline-offset: 6px;
+    border-radius: var(--radius-small);
+  }
+
+  .entry-card__title a:focus-visible {
+    outline: none;
+  }
+
+  .entry-card__summary {
+    margin: var(--s-3) 0 var(--s-2);
+    color: var(--c-graphite);
+    max-width: 62ch;
+  }
+
+  .entry-card__date {
+    margin: 0;
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+</style>
