@@ -12,6 +12,7 @@ Built with Astro and TypeScript, written in Markdown and MDX, and deployed to Gi
 | [docs/PUBLISHING_GUIDE.md](docs/PUBLISHING_GUIDE.md) | Adding an article, preview, checks, Substack and LinkedIn versions |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Build, CI, GitHub Pages, legacy URLs, cutover and rollback |
 | [docs/QA_REPORT.md](docs/QA_REPORT.md) | Results of the release checks |
+| [docs/LAUNCH_REPORT.md](docs/LAUNCH_REPORT.md) | The first deployment: what was deployed, live checks, rollback |
 
 ```sh
 npm ci && npm run dev

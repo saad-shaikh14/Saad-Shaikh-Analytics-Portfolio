@@ -42,7 +42,7 @@ The publication safety scan also checks for private names: employer, client and 
 ## Configuration that matters
 
 - **`site` and `base`.** `astro.config.mjs` sets `site: 'https://saad-shaikh14.github.io'` and `base: '/Saad-Shaikh-Analytics-Portfolio'`. Every internal link goes through `src/utils/url.ts`. Never hard-code a leading `/`.
-- **Trailing slashes.** `trailingSlash: 'always'` with `build.format: 'directory'`, so every page's canonical URL ends in `/`. A request without the slash, such as `/about`, still lands on `/about/`: GitHub Pages either redirects it to the directory, or serves `about.html`, which here is the legacy redirect page. Which of the two Pages does is read live after deployment.
+- **Trailing slashes.** `trailingSlash: 'always'` with `build.format: 'directory'`, so every page's canonical URL ends in `/`. A request without the slash still lands on the page. Read live on 22 Nov 2026: GitHub Pages answers `/writing` and `/architecture` with a 301 to the trailing-slash URL, and answers `/about` with `about.html` (200), the legacy redirect page, which forwards to `/about/`.
 - **The repository must not be renamed.** GitHub does not redirect Pages URLs after a rename. Project-site paths are also case-sensitive.
 - **`robots.txt` and site name.** Crawlers only read `robots.txt` at a host's root, so a project site cannot use one. Indexing is controlled per page with `<meta name="robots">`. Google does not show site names for sub-directory sites. Both become possible with a custom domain, which is a future option and needs approval.
 

@@ -1,0 +1,52 @@
+# Live checks after the first deployment. Times are UTC. Site: https://saad-shaikh14.github.io/Saad-Shaikh-Analytics-Portfolio/
+
+## 2026-11-22T11:43:35Z HTTP status, title and redirect target
+200 / | Saad Shaikh · Inside Modern Data Systems
+200 /architecture/ | Architecture · Saad Shaikh
+200 /writing/ | Writing · Saad Shaikh
+200 /about/ | About · Saad Shaikh
+200 /architecture/log-based-cdc-into-a-warehouse/ | Log-based change data capture into an analytical warehouse · Saad Shaikh
+200 /architecture/log-based-cdc-into-a-warehouse/figures/1/ | Figure 1: Reference blueprint: log-based change data capture into an analytical warehouse · Saad Shaikh
+200 /architecture/log-based-cdc-into-a-warehouse/figures/2/ | Figure 2: Failure and recovery: duplicates after a restart, and convergence through a position-guarded merge · Saad Shaikh
+200 /rss.xml | Saad Shaikh: Inside Modern Data Systems
+200 /sitemap-index.xml | 
+200 /sitemap-0.xml | 
+200 /index.html | Saad Shaikh · Inside Modern Data Systems
+200 /about.html | Moved: About · Saad Shaikh | refresh to /Saad-Shaikh-Analytics-Portfolio/about/
+200 /contactingme.html | Moved: About (links and contact) · Saad Shaikh | refresh to /Saad-Shaikh-Analytics-Portfolio/about/
+200 /myprojects.html | Moved: Architecture · Saad Shaikh | refresh to /Saad-Shaikh-Analytics-Portfolio/architecture/
+200 /about | Moved: About · Saad Shaikh | refresh to /Saad-Shaikh-Analytics-Portfolio/about/
+404 /AnalyzingDatasets.html | Page not found · Saad Shaikh
+404 /VisualisingDatasets.html | Page not found · Saad Shaikh
+404 /CreatingReports.html | Page not found · Saad Shaikh
+404 /amazondataset.html | Page not found · Saad Shaikh
+404 /netflixdataset.html | Page not found · Saad Shaikh
+404 /bcd.html | Page not found · Saad Shaikh
+404 /onecolumn.html | Page not found · Saad Shaikh
+404 /twocolumn1.html | Page not found · Saad Shaikh
+404 /twocolumn2.html | Page not found · Saad Shaikh
+404 /threecolumn.html | Page not found · Saad Shaikh
+
+## response headers for the home page
+last-modified: Sun, 22 Nov 2026 11:41:08 GMT
+cache-control: max-age=600
+
+## sitemap and feed
+sitemap-0.xml URLs: 5
+rss.xml items: 1
+
+## 2026-11-22T11:43:41Z browser checks (Chromium from Playwright 1.65.1): status, h1, canonical, nav, axe WCAG 2.2 AA at 375 px; page-level overflow at 375 and 320 px; links
+/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/architecture/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/writing/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/about/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/architecture/log-based-cdc-into-a-warehouse/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/architecture/log-based-cdc-into-a-warehouse/figures/1/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+/architecture/log-based-cdc-into-a-warehouse/figures/2/  status=200 h1=1 canonical=true nav=true axe=0  overflow@375=false  overflow@320=false
+about.html lands on /about/
+full-size link -> /architecture/log-based-cdc-into-a-warehouse/figures/1/
+back link -> /architecture/log-based-cdc-into-a-warehouse/#figure-1
+
+## Lighthouse 12.8.2, mobile defaults
+/ 2026-11-22T11:44:07.253Z  performance/accessibility/best-practices/SEO: 100 / 100 / 100 / 100 | LCP 0.9 s | CLS 0 | TBT 0 ms
+/architecture/log-based-cdc-into-a-warehouse/ 2026-11-22T11:44:18.468Z  performance/accessibility/best-practices/SEO: 100 / 100 / 100 / 100 | LCP 1.1 s | CLS 0.032 | TBT 20 ms
