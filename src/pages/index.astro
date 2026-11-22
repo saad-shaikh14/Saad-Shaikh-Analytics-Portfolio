@@ -1,50 +1,48 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import EntryCard from '../components/EntryCard.astro';
-import Figure from '../components/Figure.astro';
 import { ARCHITECTURE_TYPES, LINKS, SITE } from '../data/site';
-import { publishedArchitecture, publishedArticles } from '../utils/content';
+import { publishedArchitecture } from '../utils/content';
 import { absoluteUrl, url } from '../utils/url';
-import { figuresFor } from '../visuals';
 
-const architecture = await publishedArchitecture();
-const articles = await publishedArticles();
-const featured = architecture[0];
-const featuredFigure = featured ? figuresFor(featured.data.visual)[0] : undefined;
+const entries = await publishedArchitecture();
+const featured = entries[0];
 
-// "Selected knowledge" lists only real, published items, excluding the one already featured.
-const selected = [
-  ...architecture.slice(featured ? 1 : 0).map((e) => ({
-    href: url(`/architecture/${e.id}/`),
-    title: e.data.title,
-    summary: e.data.summary,
-    kicker: ARCHITECTURE_TYPES[e.data.architectureType].label,
-    date: e.data.publicationDate,
-  })),
-  ...articles.map((a) => ({
-    href: url(`/writing/${a.id}/`),
-    title: a.data.title,
-    summary: a.data.summary,
-    kicker: 'Article',
-    date: a.data.publicationDate,
-  })),
-]
-  .sort((a, b) => b.date.valueOf() - a.date.valueOf())
-  .slice(0, 4);
-
-const topics = [
+// Three areas, each linking to something that exists. Same structure as the three service cards it replaces.
+const areas = [
   {
+    n: '01',
     title: 'Data Engineering',
-    text: 'The pipelines that ingest, transform and deliver data, and the details that decide whether they can be trusted: incremental processing, idempotent loads, late-arriving data, testing and reconciliation.',
+    text: 'Pipelines that can be re-run safely: idempotent loads, late data, deletes and replays.',
+    href: featured ? `/architecture/${featured.id}/` : '/architecture/',
+    link: featured ? 'Read the CDC blueprint' : 'Open the library',
   },
   {
+    n: '02',
     title: 'Data Platform Architecture',
-    text: 'How storage, compute, transformation, orchestration and governance fit together, and the trade-offs between warehouses and lakehouses, batch and streaming, managed and self-run components.',
+    text: 'How capture, storage, transformation and orchestration fit together, with the assumptions stated.',
+    href: '/architecture/',
+    link: 'Explore the architecture library',
   },
   {
-    title: 'AI and Emerging Systems',
-    text: 'How AI agents and new infrastructure change the way data platforms are built and operated, examined with the same questions as any other system: what it guarantees, how it fails and who stays accountable.',
+    n: '03',
+    title: 'AI',
+    text: 'How AI agents and new infrastructure change the way data systems are built and operated, and what should still need a person.',
+    href: '/about/#ai',
+    link: 'What I am exploring',
   },
+];
+
+const principles = [
+  { title: 'Decisions are written down', text: 'Each significant choice gets a short record: the options, the trade-off, and why.' },
+  { title: 'Changes are reviewed', text: 'Code and infrastructure change through pull requests, not by hand.' },
+  { title: 'Numbers are reconciled', text: 'Before a new pipeline replaces an old one, its results are checked against the source.' },
+  { title: 'AI agents work inside guardrails', text: 'I use AI coding agents daily, under controls that hand risky operations back to a person.' },
+];
+
+const steps = [
+  { title: 'The problem', text: 'Each entry starts from one data-platform problem, stated in plain words.' },
+  { title: 'One picture', text: 'A design is drawn from the documentation it cites, with its assumptions beside it.' },
+  { title: 'The detail', text: 'Then the trade-offs, the failure cases and the sources, so every claim can be checked.' },
 ];
 
 const jsonLd = [
@@ -60,53 +58,39 @@ const jsonLd = [
 ---
 
 <BaseLayout jsonLd={jsonLd}>
-  <section class="hero container-wide" aria-labelledby="hero-title">
-    <p class="eyebrow">{SITE.areas.join(' · ')}</p>
-    <h1 id="hero-title">How modern data platforms are designed, built and operated.</h1>
-    <p class="lede">
-      I'm Saad Shaikh, a data engineer. This is where I take data systems apart: reference architectures drawn from
-      cited documentation, with the failure modes ordinary diagrams leave out.
-    </p>
-    <ul class="hero__links">
-      <li><a class="text-link" href={url('/architecture/')}>Explore the architecture library</a></li>
-      <li><a class="text-link" href={url('/about/')}>About me</a></li>
-      <li><a class="text-link" href={url('/rss.xml')}>Follow new entries by RSS</a></li>
-    </ul>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__pattern" aria-hidden="true"></div>
+    <div class="container-wide hero__inner">
+      <p class="hero__eyebrow">{SITE.name} · Data Engineer · London</p>
+      <h1 id="hero-title">Data Engineering · Platform Architecture · AI</h1>
+      <p class="hero__lead">
+        I build and run data platforms on AWS and Snowflake, and I draw how they work, so the design can be checked.
+      </p>
+      <p class="hero__body">
+        This is where I take data systems apart: reference architectures drawn from cited documentation, with the failure
+        modes ordinary diagrams leave out.
+      </p>
+      <p class="hero__actions">
+        <a class="btn btn--light" href={url('/architecture/')}>Explore the architecture library</a>
+        <a class="btn btn--outline" href={url('/about/')}>About me</a>
+      </p>
+    </div>
   </section>
 
-  {
-    featured && featuredFigure && (
-      <section class="section featured" aria-labelledby="featured-title">
-        <div class="container-wide">
-          <div class="section-head">
-            <div>
-              <p class="eyebrow">Featured architecture · {ARCHITECTURE_TYPES[featured.data.architectureType].label}</p>
-              <h2 id="featured-title">
-                <a class="featured__link" href={url(`/architecture/${featured.id}/`)}>{featured.data.title}</a>
-              </h2>
-            </div>
-            <a class="text-link" href={url(`/architecture/${featured.id}/`)}>
-              Read the full entry<span class="visually-hidden">: {featured.data.title}</span>
-            </a>
-          </div>
-          <p class="lede">{featured.data.summary}</p>
-          <Figure figure={featuredFigure} entry={featured.id} idPrefix="featured-figure" />
-        </div>
-      </section>
-    )
-  }
-
-  <section class="section topics" aria-labelledby="topics-title">
+  <section class="section areas" aria-labelledby="areas-title">
     <div class="container-wide">
-      <div class="section-head">
-        <h2 id="topics-title">What this site covers</h2>
+      <div class="section-header">
+        <p class="eyebrow">What I work on</p>
+        <h2 id="areas-title">Three areas, one habit: show the working</h2>
       </div>
-      <ul class="topics__grid">
+      <ul class="cards">
         {
-          topics.map((t) => (
-            <li class="topic">
-              <h3>{t.title}</h3>
-              <p>{t.text}</p>
+          areas.map((a) => (
+            <li class="card">
+              <span class="card__num" aria-hidden="true">{a.n}</span>
+              <h3>{a.title}</h3>
+              <p>{a.text}</p>
+              <a class="text-link" href={url(a.href)}>{a.link} →</a>
             </li>
           ))
         }
@@ -114,142 +98,325 @@ const jsonLd = [
     </div>
   </section>
 
-  {
-    selected.length > 0 && (
-      <section class="section" aria-labelledby="selected-title">
-        <div class="container-wide">
-          <div class="section-head">
-            <h2 id="selected-title">Selected knowledge</h2>
-            <a class="text-link" href={url('/writing/')}>All writing</a>
-          </div>
-          <div class="selected__list">
-            {selected.map((s) => (
-              <EntryCard {...s} />
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
+  <section class="section tint" aria-labelledby="how-title">
+    <div class="container-wide">
+      <div class="section-header">
+        <p class="eyebrow">How I work</p>
+        <h2 id="how-title">Four habits behind everything here</h2>
+      </div>
+      <ul class="boxes">
+        {
+          principles.map((p) => (
+            <li class="box">
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
 
-  <section class="section about-preview" aria-labelledby="about-preview-title">
-    <div class="container-wide about-preview__inner">
-      <h2 id="about-preview-title">About</h2>
-      <div class="measure">
+  <section class="section" aria-labelledby="steps-title">
+    <div class="container-wide">
+      <div class="section-header">
+        <p class="eyebrow">How each entry works</p>
+        <h2 id="steps-title">From a problem to something you can check</h2>
+      </div>
+      <ol class="steps">
+        {
+          steps.map((s, i) => (
+            <li class="step">
+              <span class="step__num" aria-hidden="true">{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      {
+        featured && (
+          <p class="featured">
+            <strong>Start with:</strong>{' '}
+            <a href={url(`/architecture/${featured.id}/`)}>{featured.data.title}</a>
+            <span class="featured__type"> · {ARCHITECTURE_TYPES[featured.data.architectureType].label}</span>
+          </p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="connect-band" aria-labelledby="connect-title">
+    <div class="container-wide connect-band__inner">
+      <div>
+        <h2 id="connect-title">Questions or corrections?</h2>
         <p>
-          I build and operate cloud data platforms on AWS and Snowflake: change data capture and ingestion, warehouse
-          modelling with dbt, orchestration, and warehouse infrastructure as code with Terraform. I studied data science
-          at the University of Hertfordshire.
-        </p>
-        <p>
-          <a class="text-link" href={url('/about/')}>More about me</a>
-          <span aria-hidden="true"> · </span>
-          <a href={LINKS.github.href} rel="me">GitHub</a>
-          <span aria-hidden="true"> · </span>
-          <a href={LINKS.linkedin.href} rel="me">LinkedIn</a>
+          If you work on data platforms and spot something wrong or missing in an entry, I would like to hear it. The
+          quickest way is a message on LinkedIn.
         </p>
       </div>
+      <ul class="connect-band__links">
+        <li><a class="btn btn--light" href={LINKS.linkedin.href} rel="me">Connect on LinkedIn</a></li>
+        <li><a class="btn btn--outline" href={LINKS.github.href} rel="me">GitHub</a></li>
+        <li><a class="btn btn--outline" href={url('/rss.xml')}>RSS</a></li>
+      </ul>
     </div>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: var(--s-9) var(--s-8);
+    position: relative;
+    overflow: hidden;
+    background: var(--c-navy);
+    color: #e9eef4;
+  }
+
+  .hero__pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(90deg, transparent 10%, #000 85%);
+  }
+
+  .hero__inner {
+    position: relative;
+    padding-block: var(--s-9);
+  }
+
+  .hero__eyebrow {
+    margin: 0 0 var(--s-4);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f4c7a8;
   }
 
   .hero h1 {
-    max-width: 17ch;
+    color: var(--c-surface);
+    max-width: 18ch;
     margin: 0 0 var(--s-5);
   }
 
-  .hero__links {
-    list-style: none;
+  .hero__lead {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 52ch;
+    margin: 0 0 var(--s-3);
+    color: var(--c-surface);
+  }
+
+  .hero__body {
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-3) var(--s-6);
+    gap: var(--s-3);
     margin: var(--s-6) 0 0;
-    padding: 0;
   }
 
-  .hero__links a {
+  .btn {
     display: inline-block;
-    min-height: 2.75rem;
-    padding-block: 0.55rem;
-  }
-
-  .hero__links a::after {
-    content: ' →';
-  }
-
-  .featured__link {
-    color: var(--c-ink);
+    padding: 0.75rem 1.3rem;
+    border-radius: 999px;
+    font-weight: 700;
     text-decoration: none;
+    border: 1.5px solid transparent;
   }
 
-  .featured__link:hover {
-    color: var(--c-copper);
+  .btn--light {
+    background: var(--c-surface);
+    color: var(--c-navy);
   }
 
-  .topics__grid {
+  .btn--light:hover {
+    background: #f4c7a8;
+    color: var(--c-ink);
+  }
+
+  .btn--outline {
+    color: var(--c-surface);
+    border-color: #c5d0dc;
+  }
+
+  .btn--outline:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--c-surface);
+  }
+
+  .hero :focus-visible,
+  .connect-band :focus-visible {
+    outline-color: #f4c7a8;
+  }
+
+  .tint {
+    background: var(--c-parchment);
+  }
+
+  .section-header {
+    margin-bottom: var(--s-6);
+    max-width: 40rem;
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .cards,
+  .boxes,
+  .steps {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
+    gap: var(--s-5);
+  }
+
+  .cards,
+  .steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--s-6);
   }
 
-  .topic {
-    border-top: 3px solid var(--c-navy);
-    padding-top: var(--s-4);
+  .boxes {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  .topic:first-child {
+  .card,
+  .box,
+  .step {
+    background: var(--c-surface);
+    border: 1px solid var(--c-rule);
+    border-radius: 14px;
+    padding: var(--s-6) var(--s-5);
+  }
+
+  .card {
+    border-top: 4px solid var(--c-navy);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-3);
+  }
+
+  .card:nth-child(2) {
     border-top-color: var(--c-copper);
   }
 
-  .topic:last-child {
+  .card:nth-child(3) {
     border-top-color: var(--c-teal);
   }
 
-  .topic h3 {
+  .card h3,
+  .box h3,
+  .step h3 {
     font-size: var(--step-1);
-    margin: 0 0 var(--s-3);
+    margin: 0;
   }
 
-  .topic p {
+  .card p,
+  .box p,
+  .step p {
     margin: 0;
     color: var(--c-graphite);
   }
 
-  .about-preview__inner {
+  .card .text-link {
+    margin-top: auto;
+    white-space: normal;
+  }
+
+  .card__num,
+  .step__num {
+    font-family: var(--f-mono);
+    font-weight: 600;
+    color: var(--c-copper-deep);
+  }
+
+  .step__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: var(--c-copper-deep);
+    color: var(--c-surface);
+    border-radius: 50%;
+    margin-bottom: var(--s-3);
+  }
+
+  .featured {
+    margin: var(--s-6) 0 0;
+    font-size: var(--step-1);
+  }
+
+  .featured__type {
+    color: var(--c-graphite);
+    font-size: var(--step-0);
+  }
+
+  .connect-band {
+    background: var(--c-navy);
+    color: #e9eef4;
+  }
+
+  .connect-band__inner {
     display: grid;
-    grid-template-columns: minmax(10rem, 1fr) 3fr;
-    gap: var(--s-6);
+    grid-template-columns: 3fr 2fr;
+    gap: var(--s-7);
+    align-items: center;
+    padding-block: var(--s-8);
   }
 
-  .about-preview__inner h2 {
+  .connect-band h2 {
+    color: var(--c-surface);
+    margin: 0 0 var(--s-3);
+  }
+
+  .connect-band p {
     margin: 0;
+    max-width: 52ch;
   }
 
-  .about-preview p:first-child {
-    margin-top: 0;
+  .connect-band__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  @media (max-width: 64rem) {
+    .boxes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 56rem) {
-    .topics__grid {
+    .cards,
+    .steps,
+    .connect-band__inner {
       grid-template-columns: 1fr;
     }
 
-    .about-preview__inner {
-      grid-template-columns: 1fr;
+    .connect-band__inner {
+      gap: var(--s-5);
     }
   }
 
   @media (max-width: 40rem) {
-    .hero {
-      padding-block: var(--s-7) var(--s-6);
+    .hero__inner {
+      padding-block: var(--s-8);
+    }
+
+    .boxes {
+      grid-template-columns: 1fr;
     }
   }
 </style>

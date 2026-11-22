@@ -1,0 +1,106 @@
+---
+// Inner-page banner: a navy band with a breadcrumb, the page title and an intro.
+// The pattern is a drawn motif (grid lines and nodes), not an image, so nothing pretends to be data.
+import { url } from '../utils/url';
+
+interface Props {
+  title: string;
+  /** Breadcrumb trail after "Home", as [label, path] pairs; the last has no link. */
+  crumbs?: [string, string?][];
+  eyebrow?: string;
+}
+const { title, crumbs = [], eyebrow } = Astro.props;
+---
+
+<section class="banner" aria-labelledby="banner-title">
+  <div class="banner__pattern" aria-hidden="true"></div>
+  <div class="container-wide banner__inner">
+    {
+      crumbs.length > 0 && (
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href={url('/')}>Home</a>
+          {crumbs.map(([label, path]) => (
+            <>
+              <span aria-hidden="true">›</span>
+              {path ? <a href={url(path)}>{label}</a> : <span aria-current="page">{label}</span>}
+            </>
+          ))}
+        </nav>
+      )
+    }
+    {eyebrow && <p class="banner__eyebrow">{eyebrow}</p>}
+    <h1 id="banner-title">{title}</h1>
+    <div class="banner__intro"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .banner {
+    position: relative;
+    overflow: hidden;
+    background: var(--c-navy);
+    color: #e9eef4;
+  }
+
+  .banner__pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 70%);
+  }
+
+  .banner__inner {
+    position: relative;
+    padding-block: var(--s-8);
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-bottom: var(--s-4);
+    font-size: var(--step--1);
+  }
+
+  .crumbs a {
+    color: #f4c7a8;
+  }
+
+  .banner__eyebrow {
+    margin: 0 0 var(--s-3);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f4c7a8;
+  }
+
+  .banner h1 {
+    color: var(--c-surface);
+    max-width: 24ch;
+    margin: 0 0 var(--s-4);
+  }
+
+  .banner__intro {
+    max-width: 62ch;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .banner__intro :global(p) {
+    margin: 0 0 var(--s-3);
+  }
+
+  .banner :focus-visible {
+    outline-color: #f4c7a8;
+  }
+
+  @media (max-width: 40rem) {
+    .banner__inner {
+      padding-block: var(--s-7);
+    }
+  }
+</style>

@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SourceList from '../../components/SourceList.astro';
+import PageBanner from '../../components/PageBanner.astro';
 import { ARCHITECTURE_TYPES, SITE } from '../../data/site';
 import { formatDate, isoDate, publishedArchitecture, readingMinutes } from '../../utils/content';
 import { absoluteUrl, url } from '../../utils/url';
@@ -49,16 +50,9 @@ const jsonLd = [
   jsonLd={jsonLd}
 >
   <article class="entry">
-    <header class="container-wide entry__header">
-      <nav aria-label="Breadcrumb" class="breadcrumb">
-        <a href={url('/architecture/')}>Architecture</a>
-        <span aria-hidden="true"> / </span>
-        <span>{type.label}</span>
-      </nav>
-      <h1>{entry.data.title}</h1>
-      <p class="lede">{entry.data.summary}</p>
+    <PageBanner title={entry.data.title} eyebrow={type.label} crumbs={[['Architecture', '/architecture/'], [type.label]]}>
+      <p>{entry.data.summary}</p>
       <ul class="entry__meta">
-        <li><span class="tag tag--reference">{type.label}</span></li>
         <li>
           Published <time datetime={isoDate(entry.data.publicationDate)}>{formatDate(entry.data.publicationDate)}</time>
         </li>
@@ -67,7 +61,7 @@ const jsonLd = [
         </li>
         <li>{minutes} min read</li>
       </ul>
-    </header>
+    </PageBanner>
 
     <div class="container-wide entry__intro">
       <section class="assumptions" aria-labelledby="assumptions-title">
@@ -100,21 +94,6 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
-  .entry__header {
-    padding-block: var(--s-8) var(--s-6);
-  }
-
-  .entry__header h1 {
-    max-width: 22ch;
-    margin: var(--s-3) 0 var(--s-4);
-  }
-
-  .breadcrumb {
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--c-graphite);
-  }
-
   .entry__meta {
     list-style: none;
     display: flex;
@@ -124,7 +103,7 @@ const jsonLd = [
     margin: var(--s-5) 0 0;
     padding: 0;
     font-size: var(--step--1);
-    color: var(--c-graphite);
+    color: #dfe6ee;
   }
 
   .entry__intro {

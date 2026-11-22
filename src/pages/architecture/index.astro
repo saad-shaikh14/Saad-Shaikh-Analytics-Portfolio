@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EntryCard from '../../components/EntryCard.astro';
+import PageBanner from '../../components/PageBanner.astro';
 import { ARCHITECTURE_TYPES } from '../../data/site';
 import { publishedArchitecture } from '../../utils/content';
 import { url } from '../../utils/url';
@@ -12,31 +13,15 @@ const entries = await publishedArchitecture();
   title="Architecture"
   description="A library of reference architectures, architecture decisions, engineering patterns and visual explainers for modern data platforms, each built from cited sources."
 >
-  <section class="container-wide page-intro" aria-labelledby="arch-title">
-    <p class="eyebrow">Architecture library</p>
-    <h1 id="arch-title">Architecture</h1>
-    <p class="lede">
-      Diagrams and explanations of how data platforms fit together and how they fail. Every figure here is drawn from
-      cited documentation and reviewed before it is published. Each entry states its assumptions, and reference
-      architectures are labelled as such: they describe a possible design, not a specific deployment.
+  <PageBanner title="Architecture" eyebrow="Architecture library" crumbs={[['Architecture']]}>
+    <p>
+      Diagrams and explanations of how data platforms fit together and how they fail. Every figure is drawn from cited
+      documentation and reviewed before it is published. Reference architectures describe a possible design, not a
+      specific deployment.
     </p>
-  </section>
+  </PageBanner>
 
-  <section class="container-wide formats" aria-labelledby="formats-title">
-    <h2 id="formats-title" class="visually-hidden">Kinds of entry</h2>
-    <dl class="formats__list">
-      {
-        Object.values(ARCHITECTURE_TYPES).map((t) => (
-          <div class="formats__item">
-            <dt>{t.label}</dt>
-            <dd>{t.blurb}</dd>
-          </div>
-        ))
-      }
-    </dl>
-  </section>
-
-  <section class="container-wide entries" aria-labelledby="entries-title">
+  <section class="section container-wide entries" aria-labelledby="entries-title">
     <h2 id="entries-title">Entries</h2>
     {
       entries.map((e) => (
@@ -50,15 +35,33 @@ const entries = await publishedArchitecture();
       ))
     }
   </section>
+
+  <section class="tint" aria-labelledby="formats-title">
+    <div class="container-wide formats">
+    <h2 id="formats-title">Kinds of entry</h2>
+    <dl class="formats__list">
+      {
+        Object.values(ARCHITECTURE_TYPES).map((t) => (
+          <div class="formats__item">
+            <dt>{t.label}</dt>
+            <dd>{t.blurb}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    </div>
+  </section>
+
 </BaseLayout>
 
 <style>
-  .page-intro {
-    padding-block: var(--s-8) var(--s-6);
+  .tint {
+    background: var(--c-parchment);
+    margin-top: var(--s-7);
   }
 
-  .page-intro h1 {
-    margin: 0 0 var(--s-4);
+  .formats {
+    padding-block: var(--s-7);
   }
 
   .formats__list {
@@ -66,7 +69,7 @@ const entries = await publishedArchitecture();
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--s-5);
     margin: 0;
-    padding: var(--s-5) 0 var(--s-7);
+    padding: var(--s-4) 0 0;
   }
 
   .formats__item {

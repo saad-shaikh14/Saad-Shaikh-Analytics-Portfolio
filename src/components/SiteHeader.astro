@@ -1,37 +1,76 @@
 ---
-import { NAV, SITE } from '../data/site';
+import { LINKS, NAV, SITE } from '../data/site';
+import { publishedArchitecture } from '../utils/content';
 import { isCurrent, url } from '../utils/url';
 
 const here = Astro.url.pathname;
+const entries = await publishedArchitecture();
 ---
 
 <header class="site-header">
   <div class="container-wide site-header__inner">
     <a class="brand" href={url('/')}>
       <span class="brand__name">{SITE.name}</span>{' '}
-      <span class="brand__subtitle">{SITE.subtitle}</span>
+      <span class="brand__role">Data Engineer</span>
     </a>
-    <nav aria-label="Main">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">
+      <span class="menu-toggle__bars" aria-hidden="true"></span>
+      <span class="visually-hidden">Menu</span>
+    </button>
+    <nav id="main-nav" aria-label="Main" class="site-nav">
       <ul class="nav">
         {
           NAV.map((item) => {
             const current = isCurrent(here, item.path);
+            const hasMenu = item.path === '/architecture/' && entries.length > 0;
             return (
-              <li>
+              <li class:list={{ 'has-menu': hasMenu }}>
                 <a href={url(item.path)} aria-current={current ? 'page' : undefined}>
                   {item.label}
                 </a>
+                {hasMenu && (
+                  <ul class="submenu" aria-label="Architecture entries">
+                    {entries.map((e) => (
+                      <li>
+                        <a href={url(`/architecture/${e.id}/`)}>{e.data.title}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             );
           })
         }
       </ul>
+      <a class="connect" href={LINKS.linkedin.href} rel="me">Connect</a>
     </nav>
   </div>
 </header>
 
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('main-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    nav?.classList.toggle('is-open', !open);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav?.classList.remove('is-open');
+      toggle.focus();
+    }
+  });
+</script>
+
 <style>
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(250, 247, 240, 0.96);
+    backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--c-rule);
   }
 
@@ -39,9 +78,8 @@ const here = Astro.url.pathname;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--s-3) var(--s-6);
-    flex-wrap: wrap;
-    padding-block: var(--s-4);
+    gap: var(--s-4) var(--s-6);
+    padding-block: var(--s-3);
   }
 
   .brand {
@@ -49,32 +87,40 @@ const here = Astro.url.pathname;
     flex-direction: column;
     text-decoration: none;
     color: var(--c-ink);
-    padding-block: var(--s-1);
   }
 
   .brand__name {
     font-family: var(--f-display);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 650;
     line-height: 1.15;
     letter-spacing: -0.01em;
   }
 
-  .brand__subtitle {
-    font-size: 0.8rem;
+  .brand__role {
+    font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--c-graphite);
   }
 
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+  }
+
   .nav {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
     gap: var(--s-1) var(--s-5);
     margin: 0;
     padding: 0;
+  }
+
+  .nav > li {
+    position: relative;
   }
 
   .nav a {
@@ -95,14 +141,126 @@ const here = Astro.url.pathname;
     border-bottom-color: var(--c-copper);
   }
 
-  @media (max-width: 40rem) {
-    .site-header__inner {
+  .submenu {
+    list-style: none;
+    margin: 0;
+    padding: var(--s-2);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 18rem;
+    background: var(--c-surface);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 28px rgba(28, 27, 25, 0.12);
+    display: none;
+  }
+
+  .has-menu:hover > .submenu,
+  .has-menu:focus-within > .submenu {
+    display: block;
+  }
+
+  .submenu a {
+    display: block;
+    padding: 0.55rem 0.75rem;
+    border-bottom: 0;
+    font-weight: 500;
+    border-radius: var(--radius-small);
+  }
+
+  .submenu a:hover {
+    background: var(--c-parchment);
+  }
+
+  .connect {
+    display: inline-block;
+    padding: 0.6rem 1.15rem;
+    background: var(--c-copper-deep);
+    color: var(--c-surface);
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 999px;
+  }
+
+  .connect:hover {
+    background: var(--c-ink);
+    color: var(--c-surface);
+  }
+
+  .menu-toggle {
+    display: none;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    background: transparent;
+    border: 1px solid var(--c-rule-strong);
+    border-radius: var(--radius-small);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-toggle__bars,
+  .menu-toggle__bars::before,
+  .menu-toggle__bars::after {
+    display: block;
+    width: 1.25rem;
+    height: 2px;
+    background: var(--c-ink);
+    content: '';
+    position: relative;
+  }
+
+  .menu-toggle__bars::before {
+    position: absolute;
+    top: -6px;
+  }
+
+  .menu-toggle__bars::after {
+    position: absolute;
+    top: 6px;
+  }
+
+  @media (max-width: 56rem) {
+    .menu-toggle {
+      display: inline-flex;
+    }
+
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
+      gap: var(--s-3);
+      padding: var(--s-4) var(--s-5) var(--s-5);
+      background: var(--c-paper);
+      border-bottom: 1px solid var(--c-rule);
+    }
+
+    .site-nav.is-open {
+      display: flex;
     }
 
     .nav {
-      gap: var(--s-1) var(--s-4);
+      flex-direction: column;
+    }
+
+    .submenu {
+      display: block;
+      position: static;
+      min-width: 0;
+      box-shadow: none;
+      border: 0;
+      background: transparent;
+      padding: 0 0 0 var(--s-4);
+    }
+
+    .connect {
+      text-align: center;
     }
   }
 </style>
