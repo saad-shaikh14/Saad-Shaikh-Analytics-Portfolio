@@ -1,0 +1,174 @@
+---
+// A deliberately simple overview of log-based CDC: the path one change takes, and where duplicates are made harmless.
+// Every statement is a subset of the verified entry and figure 1 (src/visuals/log-based-cdc/sources.md).
+// It is HTML, not SVG, so it reflows: a row on wide screens, a column on phones, with no sideways scrolling.
+interface Props {
+  compact?: boolean;
+  headingId?: string;
+}
+const { compact = false, headingId = 'cdc-overview' } = Astro.props;
+const steps = [
+  { kicker: 'SOURCE', name: 'Database log', text: 'records every committed insert, update and delete', hi: false },
+  { kicker: 'JOB', name: 'Capture', text: 'reads the log: a snapshot first, then the stream of changes', hi: false },
+  { kicker: 'TABLE', name: 'Landing', text: 'keeps every change as it arrived, duplicates included', hi: false },
+  { kicker: 'JOB', name: 'Latest per key', text: 'keeps the newest change for each key, by log position', hi: true },
+  { kicker: 'TABLE', name: 'Current state', text: 'applies a change only if it is newer than what is stored', hi: true },
+];
+---
+
+<figure class:list={['ov', { 'ov--compact': compact }]} aria-labelledby={headingId}>
+  <ol class="ov__flow">
+    {
+      steps.map((s, i) => (
+        <li class:list={['ov__step', { 'ov__step--hi': s.hi }]}>
+          <span class="ov__kicker">{s.kicker}</span>
+          <span class="ov__name">{s.name}</span>
+          {!compact && <span class="ov__text">{s.text}</span>}
+          {i < steps.length - 1 && <span class="ov__arrow" aria-hidden="true" />}
+        </li>
+      ))
+    }
+  </ol>
+  <div class="ov__notes">
+    <p class="ov__note ov__note--risk"><span aria-hidden="true">●</span> Duplicates can arrive at landing: capture may resend changes after a restart.</p>
+    <p class="ov__note ov__note--fix"><span aria-hidden="true">■</span> They are made harmless in the last two steps.</p>
+  </div>
+  <figcaption id={headingId} class="ov__caption">
+    <strong>Overview: the path one change takes.</strong> Product choices, monitoring and recovery are left out here; the full
+    blueprint and the restart case show them.
+  </figcaption>
+</figure>
+
+<style>
+  .ov {
+    margin: 0;
+    color: var(--c-ink); /* set explicitly, so a dark section around the figure cannot lighten its text */
+    background: var(--c-surface);
+    border: 1px solid var(--c-rule);
+    border-radius: var(--radius);
+    padding: var(--s-5);
+  }
+
+  .ov__flow {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+
+  .ov__step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+    padding: var(--s-3);
+    border: 1.5px solid var(--c-navy);
+    border-radius: 6px;
+    background: var(--c-navy-soft);
+  }
+
+  .ov__step--hi {
+    border-color: var(--c-copper);
+    background: #f4e6da;
+  }
+
+  .ov__kicker {
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--c-graphite);
+  }
+
+  .ov__name {
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .ov__text {
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+    line-height: 1.4;
+  }
+
+  .ov__arrow {
+    position: absolute;
+    right: calc(-1 * var(--s-5));
+    top: 50%;
+    width: var(--s-5);
+    height: 2px;
+    background: var(--c-navy);
+  }
+
+  .ov__arrow::after {
+    content: '';
+    position: absolute;
+    right: 2px;
+    top: -5px;
+    border: 6px solid transparent;
+    border-left: 9px solid var(--c-navy);
+    border-right: 0;
+  }
+
+  .ov__notes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-6);
+    margin-top: var(--s-4);
+    font-size: var(--step--1);
+  }
+
+  .ov__note {
+    margin: 0;
+  }
+
+  .ov__note--risk span {
+    color: var(--c-teal);
+  }
+
+  .ov__note--fix span {
+    color: var(--c-copper);
+  }
+
+  .ov__caption {
+    margin-top: var(--s-3);
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  .ov__caption strong {
+    color: var(--c-ink);
+  }
+
+  .ov--compact .ov__flow {
+    gap: var(--s-4);
+  }
+
+  @media (max-width: 48rem) {
+    .ov__flow {
+      grid-template-columns: 1fr;
+      gap: var(--s-5);
+    }
+
+    .ov__arrow {
+      right: auto;
+      left: 1.5rem;
+      top: auto;
+      bottom: calc(-1 * var(--s-5));
+      width: 2px;
+      height: var(--s-5);
+    }
+
+    .ov__arrow::after {
+      right: auto;
+      left: -5px;
+      top: auto;
+      bottom: 2px;
+      border: 6px solid transparent;
+      border-top: 9px solid var(--c-navy);
+      border-bottom: 0;
+    }
+  }
+</style>

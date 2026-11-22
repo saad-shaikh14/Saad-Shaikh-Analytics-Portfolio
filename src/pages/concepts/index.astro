@@ -1,0 +1,23 @@
+---
+// Index of the brand-direction concepts for issue #3. Prototype only; noindex.
+import ConceptLayout from '../../layouts/ConceptLayout.astro';
+import { url } from '../../utils/url';
+const links = [
+  ['Direction A: Letterhead', '/concepts/a/', 'The person first, set in type; one clear next step.'],
+  ['Direction B: Drawn systems', '/concepts/b/', 'A navy band where the diagram language carries the identity.'],
+  ['Direction C: Problems I work on', '/concepts/c/', 'The outcome in the reader\'s words, with the name and role directly above it.'],
+  ['Architecture landing (shared)', '/concepts/architecture/', 'The one real entry as a visual cover; taxonomy moved to a note.'],
+  ['About (shared, draft copy)', '/concepts/about/', 'A first-person narrative for Saad to correct.'],
+  ['The CDC entry\'s new opening (shared)', '/concepts/cdc/', 'A 30-second summary, one picture that reflows on phones, then a reading path.'],
+];
+---
+
+<ConceptLayout title="Concepts" label="index">
+  <section class="container-wide" style="padding-block: var(--s-8);">
+    <h1>Brand-direction concepts</h1>
+    <p class="lede">Prototypes for review on issue #3. Real content only; nothing here is published.</p>
+    <ul>
+      {links.map(([t, h, d]) => <li><a href={url(h)}>{t}</a>: {d}</li>)}
+    </ul>
+  </section>
+</ConceptLayout>

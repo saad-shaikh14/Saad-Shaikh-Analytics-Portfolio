@@ -1,0 +1,110 @@
+---
+// About, concept: a first-person narrative drafted from Saad's share-safe handoff (career history and ways of
+// working, generalised, no employer or product names). Every sentence is for Saad to correct before publication.
+import ConceptLayout from '../../layouts/ConceptLayout.astro';
+import { LINKS } from '../../data/site';
+import { url } from '../../utils/url';
+---
+
+<ConceptLayout title="About" label="shared page for A, B and C (draft copy for Saad to correct)" current="about">
+  <article class="container-wide about-c" aria-labelledby="about-title">
+    <header class="about-c__head">
+      <p class="eyebrow">About</p>
+      <h1 id="about-title">Hello, I'm Saad.</h1>
+      <p class="lede">
+        I'm a data engineer in London. I build and run the data platforms that reporting, CRM and analytics depend on,
+        currently in the online gaming industry.
+      </p>
+    </header>
+
+    <div class="about-c__body">
+      <section aria-labelledby="work">
+        <h2 id="work">The problems I work on</h2>
+        <p>
+          Most of my work sits where data moves between systems: capturing changes from operational databases, modelling
+          them in a warehouse, scheduling the jobs that keep it current, and keeping the infrastructure in code.
+        </p>
+        <p>
+          The interesting problems are the ones a diagram leaves out. What happens when a job restarts halfway? When the
+          same change arrives twice, or a delete never arrives? And how do you show that the numbers at the end are right?
+        </p>
+      </section>
+
+      <section aria-labelledby="path">
+        <h2 id="path">How I got here</h2>
+        <p>
+          I started on the analysis side, in market research and then as a data analyst, writing Python to automate the
+          reporting I was asked for. I moved into building the platforms underneath that reporting, and I've worked as a
+          data engineer since 2023. I studied for an MSc in Data Science at the University of Hertfordshire.
+        </p>
+      </section>
+
+      <section aria-labelledby="how">
+        <h2 id="how">How I work</h2>
+        <ul>
+          <li>I write significant decisions down: the options, the trade-off, and why.</li>
+          <li>Changes go through review, infrastructure included.</li>
+          <li>Before a new pipeline replaces an old one, I reconcile its results against the source.</li>
+          <li>I use AI coding agents every day, inside guardrails I built that hand risky operations back to me.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="now">
+        <h2 id="now">What I'm exploring now</h2>
+        <p>
+          How AI agents change the way data pipelines are operated: what they can safely be allowed to do on their own,
+          and what should still need a person to approve.
+        </p>
+      </section>
+
+      <section aria-labelledby="tools">
+        <h2 id="tools">Tools I use</h2>
+        <p>
+          Snowflake and dbt for the warehouse; Airflow and Dagster for orchestration; Terraform for warehouse
+          infrastructure; AWS services such as S3, Lambda and DMS; Python and SQL throughout.
+        </p>
+      </section>
+
+      <p class="about-c__connect">
+        <a class="text-link" href={LINKS.linkedin.href} rel="me">Connect on LinkedIn</a>
+        <span aria-hidden="true"> · </span>
+        <a class="text-link" href={LINKS.github.href} rel="me">GitHub</a>
+        <span aria-hidden="true"> · </span>
+        <a class="text-link" href={url('/concepts/architecture/')}>Read the architecture library</a>
+      </p>
+    </div>
+  </article>
+</ConceptLayout>
+
+<style>
+  .about-c {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .about-c__head h1 {
+    font-size: clamp(2.4rem, 1.4rem + 3vw, 4rem);
+    margin: 0 0 var(--s-4);
+  }
+
+  .about-c__head .lede {
+    max-width: 52ch;
+  }
+
+  .about-c__body {
+    max-width: var(--measure);
+    margin-top: var(--s-6);
+  }
+
+  .about-c__body h2 {
+    font-size: var(--step-2);
+    margin: var(--s-7) 0 var(--s-3);
+  }
+
+  .about-c__body li + li {
+    margin-top: var(--s-2);
+  }
+
+  .about-c__connect {
+    margin-top: var(--s-7);
+  }
+</style>

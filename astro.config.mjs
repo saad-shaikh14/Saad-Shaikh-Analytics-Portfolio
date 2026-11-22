@@ -15,7 +15,7 @@ export default defineConfig({
     mdx(),
     sitemap({
       // Figure pages and the 404 are utility pages, not content.
-      filter: (page) => !page.includes('/figures/') && !page.endsWith('/404/'),
+      filter: (page) => !page.includes('/figures/') && !page.endsWith('/404/') && !page.includes('/concepts/'),
     }),
   ],
   markdown: {

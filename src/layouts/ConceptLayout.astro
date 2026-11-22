@@ -1,0 +1,154 @@
+---
+// Prototype layout for the brand-direction concepts (issue #3). Not linked from the live site; noindex.
+import '@fontsource-variable/literata/opsz.css';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/jetbrains-mono/wght.css';
+import '../styles/global.css';
+import '../styles/prose.css';
+import { LINKS, SITE } from '../data/site';
+import { url } from '../utils/url';
+
+interface Props {
+  title: string;
+  /** Which concept this page belongs to, shown in the footer label. */
+  label: string;
+  /** Header style: 'light' (ivory) or 'navy' (direction B). */
+  tone?: 'light' | 'navy';
+  current?: 'architecture' | 'writing' | 'about' | 'home';
+}
+const { title, label, tone = 'light', current } = Astro.props;
+const nav = [
+  { key: 'architecture', label: 'Architecture', href: url('/concepts/architecture/') },
+  { key: 'writing', label: 'Writing', href: url('/writing/') },
+  { key: 'about', label: 'About', href: url('/concepts/about/') },
+];
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · concept</title>
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body class:list={['concept', `concept--${tone}`]}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="c-header">
+      <div class="container-wide c-header__inner">
+        <a class="c-brand" href={url('/concepts/')}>Saad Shaikh</a>
+        <nav aria-label="Main">
+          <ul>
+            {
+              nav.map((n) => (
+                <li>
+                  <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>
+                    {n.label}
+                  </a>
+                </li>
+              ))
+            }
+            <li><a class="c-connect" href={LINKS.linkedin.href} rel="me">LinkedIn</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="c-footer">
+      <div class="container-wide c-footer__inner">
+        <p>
+          <strong>Saad Shaikh</strong> · Data engineer, London ·{' '}
+          <a href={LINKS.linkedin.href} rel="me">LinkedIn</a> · <a href={LINKS.github.href} rel="me">GitHub</a> ·{' '}
+          <a href={url('/rss.xml')}>RSS</a>
+        </p>
+        <p class="c-footer__label">Design concept for review: {label}. Not published.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  .c-header {
+    border-bottom: 1px solid var(--c-rule);
+  }
+
+  .concept--navy .c-header {
+    background: var(--c-navy);
+    border-bottom-color: var(--c-navy);
+  }
+
+  .c-header__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-4);
+    flex-wrap: wrap;
+    padding-block: var(--s-4);
+  }
+
+  .c-brand {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: var(--step-1);
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+
+  .concept--navy .c-brand,
+  .concept--navy .c-header nav a {
+    color: var(--c-surface);
+  }
+
+  .c-header ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-5);
+    margin: 0;
+    padding: 0;
+  }
+
+  .c-header nav a {
+    display: inline-block;
+    min-height: 2.75rem;
+    padding-block: 0.6rem;
+    color: var(--c-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .c-header nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--c-copper);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.5em;
+  }
+
+  .c-header nav a.c-connect {
+    color: var(--c-copper);
+  }
+
+  .concept--navy .c-header nav a.c-connect {
+    color: #f4c7a8;
+  }
+
+  .c-footer {
+    border-top: 1px solid var(--c-rule);
+    margin-top: var(--s-8);
+    padding-block: var(--s-6);
+    background: var(--c-surface);
+    font-size: var(--step--1);
+    color: var(--c-graphite);
+  }
+
+  .c-footer__inner p {
+    margin: 0 0 var(--s-2);
+  }
+
+  .c-footer__label {
+    font-style: italic;
+  }
+</style>

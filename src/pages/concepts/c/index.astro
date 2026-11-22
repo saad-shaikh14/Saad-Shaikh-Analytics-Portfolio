@@ -1,0 +1,177 @@
+---
+// Direction C, "Problems I work on": consultant-grade clarity without services. The headline names the outcome in the
+// reader's words; the name and role sit directly above it; each problem leads to something already published.
+import ConceptLayout from '../../../layouts/ConceptLayout.astro';
+import { LINKS } from '../../../data/site';
+import { url } from '../../../utils/url';
+---
+
+<ConceptLayout title="Direction C: Problems I work on" label="Direction C, Problems I work on" current="home">
+  <section class="container-wide c-hero" aria-labelledby="c-title">
+    <p class="c-who"><strong>Saad Shaikh</strong> · Data engineer, London</p>
+    <h1 id="c-title">Pipelines you can re-run. Numbers you can prove.</h1>
+    <p class="c-sub">
+      I build and run data platforms on AWS, Snowflake and dbt. This is where I work through the problems that decide
+      whether a platform can be trusted, with diagrams drawn from the documentation and the trade-offs stated.
+    </p>
+    <p class="c-actions">
+      <a class="c-primary" href={url('/concepts/cdc/')}>Start with change data capture</a>
+      <a class="text-link" href={url('/concepts/about/')}>About me</a>
+    </p>
+  </section>
+
+  <section class="container-wide c-problems" aria-labelledby="c-problems-title">
+    <h2 id="c-problems-title">Problems I work on</h2>
+    <ol class="c-list">
+      <li>
+        <p class="c-list__problem">“A restart sent the same changes twice.”</p>
+        <p class="c-list__answer">
+          Capture tools can resend changes after a failure. The fix is on the warehouse side: keep the newest change per
+          key, and apply only what is newer than what is stored.
+        </p>
+        <a class="text-link" href={url('/concepts/cdc/')}>The CDC blueprint and its failure case</a>
+      </li>
+      <li>
+        <p class="c-list__problem">“The dashboard doesn’t match the source.”</p>
+        <p class="c-list__answer">
+          Duplicates, missed deletes and cascade gaps show up first in a reconciliation of row counts and totals between
+          source and target.
+        </p>
+        <a class="text-link" href={url('/architecture/log-based-cdc-into-a-warehouse/#operating-it')}>Operating a CDC pipeline</a>
+      </li>
+      <li>
+        <p class="c-list__problem">“Can an AI agent touch production data?”</p>
+        <p class="c-list__answer">
+          I use AI coding agents every day, under guardrails I built that hand risky operations back to a person. I'm
+          exploring where that line should sit.
+        </p>
+        <a class="text-link" href={url('/concepts/about/#now')}>What I'm exploring now</a>
+      </li>
+    </ol>
+  </section>
+
+  <section class="container-wide c-how" aria-labelledby="c-how-title">
+    <h2 id="c-how-title">How I work</h2>
+    <p>
+      Significant decisions are written down with their trade-offs. Changes go through review. New pipelines are
+      reconciled against the source before they replace old ones. That habit shapes everything on this site: each
+      diagram lists its sources, and each claim says whether it is documented or my analysis.
+    </p>
+    <p>
+      <a class="text-link" href={LINKS.linkedin.href} rel="me">Connect on LinkedIn</a>
+    </p>
+  </section>
+</ConceptLayout>
+
+<style>
+  .c-hero {
+    padding-block: var(--s-9) var(--s-7);
+  }
+
+  .c-who {
+    font-size: var(--step-1);
+    margin: 0 0 var(--s-4);
+    color: var(--c-graphite);
+  }
+
+  .c-who strong {
+    color: var(--c-ink);
+    font-family: var(--f-display);
+    font-size: var(--step-2);
+  }
+
+  .c-hero h1 {
+    font-size: clamp(2.3rem, 1.2rem + 3.8vw, 4.6rem);
+    line-height: 1.05;
+    max-width: 16ch;
+    margin: 0 0 var(--s-5);
+  }
+
+  .c-sub {
+    font-size: var(--step-1);
+    color: var(--c-graphite);
+    max-width: 58ch;
+    margin: 0;
+  }
+
+  .c-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-6);
+    margin: var(--s-6) 0 0;
+  }
+
+  .c-primary {
+    display: inline-block;
+    padding: 0.8rem 1.3rem;
+    background: var(--c-copper-deep);
+    color: var(--c-surface);
+    border-radius: var(--radius-small);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .c-primary:hover {
+    background: var(--c-ink);
+    color: var(--c-surface);
+  }
+
+  .c-problems,
+  .c-how {
+    padding-block: var(--s-7);
+    border-top: 1px solid var(--c-rule);
+  }
+
+  .c-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-6);
+    counter-reset: problem;
+  }
+
+  .c-list li {
+    counter-increment: problem;
+    border-top: 3px solid var(--c-navy);
+    padding-top: var(--s-4);
+  }
+
+  .c-list li::before {
+    content: counter(problem, decimal-leading-zero);
+    font-family: var(--f-mono);
+    font-weight: 600;
+    color: var(--c-copper-deep);
+  }
+
+  .c-list__problem {
+    font-family: var(--f-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: var(--s-2) 0 var(--s-3);
+  }
+
+  .c-list__answer {
+    color: var(--c-graphite);
+    margin: 0 0 var(--s-3);
+  }
+
+  .c-how p {
+    max-width: 64ch;
+  }
+
+  @media (max-width: 56rem) {
+    .c-list {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .c-hero {
+      padding-block: var(--s-7) var(--s-6);
+    }
+  }
+</style>

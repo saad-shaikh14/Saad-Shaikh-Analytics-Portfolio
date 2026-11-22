@@ -1,0 +1,136 @@
+---
+// The first technical feature, concept: the CDC entry's opening rebuilt for progressive disclosure. A 30-second
+// summary, who it is for, one simple overview that reflows on phones, then a reading path into the verified detail.
+// All statements are a subset of the published entry and its evidence record.
+import ConceptLayout from '../../layouts/ConceptLayout.astro';
+import CdcOverview from '../../components/concepts/CdcOverview.astro';
+import { url } from '../../utils/url';
+const entry = url('/architecture/log-based-cdc-into-a-warehouse/');
+---
+
+<ConceptLayout title="Log-based CDC into a warehouse" label="shared page for A, B and C: the entry's new opening" current="architecture">
+  <article class="container-wide cdc-c" aria-labelledby="cdc-title">
+    <header class="cdc-c__head">
+      <p class="eyebrow">Reference blueprint · Data engineering</p>
+      <h1 id="cdc-title">Log-based change data capture into an analytical warehouse</h1>
+    </header>
+
+    <section class="cdc-c__summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">In 30 seconds</h2>
+      <dl>
+        <div>
+          <dt>The problem</dt>
+          <dd>Keep warehouse tables in step with a live database, without querying it on a timer.</dd>
+        </div>
+        <div>
+          <dt>The shape</dt>
+          <dd>Read changes from the database's log, land every change, keep the newest per key, and apply only changes newer than what is stored.</dd>
+        </div>
+        <div>
+          <dt>The one thing to remember</dt>
+          <dd>Changes can arrive twice after a restart. The warehouse must make duplicates harmless, and a commit-ordered log position is what makes that possible.</dd>
+        </div>
+        <div>
+          <dt>Who it's for</dt>
+          <dd>Engineers designing or reviewing a CDC pipeline into Snowflake, BigQuery or a similar warehouse.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="cdc-c__overview" aria-labelledby="overview-title">
+      <h2 id="overview-title">The idea in one picture</h2>
+      <CdcOverview headingId="cdc-ov" />
+      <p class="cdc-c__scope">
+        <strong>What this picture leaves out:</strong> which tools carry the changes (a Kafka topic or files in object
+        storage), monitoring, reconciliation and recovery. Those come next, one at a time.
+      </p>
+    </section>
+
+    <section class="cdc-c__path" aria-labelledby="path-title">
+      <h2 id="path-title">Read on</h2>
+      <ol>
+        <li><a href={`${entry}#the-blueprint`}>The full blueprint</a>: every component, with product examples and numbered steps.</li>
+        <li><a href={`${entry}#failure-and-recovery`}>What happens on a restart</a>: duplicates, replays, and why the target still converges.</li>
+        <li><a href={`${entry}#deduplicate-before-every-merge`}>The merge in SQL</a>: an illustrative sketch with its assumptions, not drop-in production code.</li>
+        <li><a href={`${entry}#operating-it`}>Operating it</a>: log retention, lag and reconciliation.</li>
+      </ol>
+      <p class="cdc-c__note">
+        On a phone, the full blueprint keeps its detail and scrolls sideways; this overview and the text description give
+        the whole idea without scrolling.
+      </p>
+    </section>
+  </article>
+</ConceptLayout>
+
+<style>
+  .cdc-c {
+    padding-block: var(--s-8) var(--s-6);
+  }
+
+  .cdc-c__head h1 {
+    max-width: 24ch;
+    margin: 0 0 var(--s-6);
+  }
+
+  .cdc-c h2 {
+    font-size: var(--step-2);
+    margin: 0 0 var(--s-4);
+  }
+
+  .cdc-c__summary {
+    background: var(--c-parchment);
+    border-radius: var(--radius);
+    padding: var(--s-6);
+    max-width: 64rem;
+  }
+
+  .cdc-c__summary dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-7);
+    margin: 0;
+  }
+
+  .cdc-c__summary dt {
+    font-weight: 700;
+    margin-bottom: var(--s-1);
+  }
+
+  .cdc-c__summary dd {
+    margin: 0;
+  }
+
+  .cdc-c__overview,
+  .cdc-c__path {
+    margin-top: var(--s-7);
+  }
+
+  .cdc-c__scope,
+  .cdc-c__note {
+    max-width: var(--measure);
+    color: var(--c-graphite);
+  }
+
+  .cdc-c__path ol {
+    max-width: var(--measure);
+    padding-left: 1.3em;
+  }
+
+  .cdc-c__path li + li {
+    margin-top: var(--s-3);
+  }
+
+  .cdc-c__path a {
+    font-weight: 700;
+  }
+
+  @media (max-width: 48rem) {
+    .cdc-c__summary dl {
+      grid-template-columns: 1fr;
+    }
+
+    .cdc-c__summary {
+      padding: var(--s-5);
+    }
+  }
+</style>

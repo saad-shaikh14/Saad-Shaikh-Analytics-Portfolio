@@ -1,0 +1,181 @@
+---
+// Direction A, "Letterhead": the person first, set in type. No image above the fold; one clear next step.
+import ConceptLayout from '../../../layouts/ConceptLayout.astro';
+import CdcOverview from '../../../components/concepts/CdcOverview.astro';
+import { LINKS } from '../../../data/site';
+import { url } from '../../../utils/url';
+---
+
+<ConceptLayout title="Direction A: Letterhead" label="Direction A, Letterhead" current="home">
+  <section class="container-wide a-hero" aria-labelledby="a-title">
+    <h1 id="a-title">
+      <span class="a-name">Saad Shaikh</span> builds data platforms that keep their numbers right, and draws how they work.
+    </h1>
+    <p class="a-sub">
+      Data engineer in London. I work on change data capture, Snowflake and dbt warehouses, and orchestration on AWS,
+      and I'm exploring what changes when AI agents start operating data pipelines.
+    </p>
+    <p class="a-actions">
+      <a class="a-primary" href={url('/concepts/cdc/')}>Read the CDC blueprint</a>
+      <a class="text-link" href={url('/concepts/about/')}>About me</a>
+      <a class="text-link" href={LINKS.linkedin.href} rel="me">Connect on LinkedIn</a>
+    </p>
+  </section>
+
+  <section class="container-wide a-feature" aria-labelledby="a-feature-title">
+    <div class="a-feature__text">
+      <p class="eyebrow">Start here</p>
+      <h2 id="a-feature-title">Getting database changes into a warehouse, once</h2>
+      <p>
+        Change data capture moves every insert, update and delete from a live database into a warehouse. Changes can
+        arrive twice after a restart, so the warehouse has to make duplicates harmless. This blueprint shows the shape
+        that does, and where it breaks.
+      </p>
+      <a class="text-link" href={url('/concepts/cdc/')}>Read the blueprint</a>
+    </div>
+    <CdcOverview compact headingId="a-ov" />
+  </section>
+
+  <section class="container-wide a-work" aria-labelledby="a-work-title">
+    <h2 id="a-work-title">How I work</h2>
+    <ul class="a-principles">
+      <li><strong>Decisions are written down.</strong> Each significant choice gets a short decision record: the options, the trade-off, and why.</li>
+      <li><strong>Changes are reviewed.</strong> Code and infrastructure change through pull requests, not by hand.</li>
+      <li><strong>Numbers are reconciled.</strong> Before a new pipeline replaces an old one, its results are checked against the source.</li>
+      <li><strong>AI agents work inside guardrails.</strong> I use AI coding agents every day, under controls I built that hand risky operations back to a person.</li>
+    </ul>
+  </section>
+
+  <section class="container-wide a-areas" aria-labelledby="a-areas-title">
+    <h2 id="a-areas-title">What I write about</h2>
+    <div class="a-areas__grid">
+      <div>
+        <h3>Data engineering</h3>
+        <p>Pipelines that can be re-run safely: idempotent loads, late data, deletes and replays.</p>
+        <a class="text-link" href={url('/concepts/cdc/')}>The CDC blueprint</a>
+      </div>
+      <div>
+        <h3>Data platform architecture</h3>
+        <p>How capture, storage, transformation and orchestration fit together, with the assumptions stated.</p>
+        <a class="text-link" href={url('/concepts/architecture/')}>The architecture library</a>
+      </div>
+      <div>
+        <h3>AI</h3>
+        <p>What changes when AI agents operate data systems, and what should still need a person's approval.</p>
+        <a class="text-link" href={url('/concepts/about/#now')}>What I'm exploring now</a>
+      </div>
+    </div>
+  </section>
+</ConceptLayout>
+
+<style>
+  .a-hero {
+    padding-block: var(--s-9) var(--s-8);
+  }
+
+  .a-hero h1 {
+    font-size: clamp(2.2rem, 1.2rem + 3.6vw, 4.4rem);
+    line-height: 1.08;
+    font-weight: 500;
+    max-width: 20ch;
+    margin: 0 0 var(--s-5);
+  }
+
+  .a-name {
+    font-weight: 800;
+  }
+
+  .a-sub {
+    font-size: var(--step-1);
+    color: var(--c-graphite);
+    max-width: 56ch;
+    margin: 0;
+  }
+
+  .a-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-6);
+    margin: var(--s-6) 0 0;
+  }
+
+  .a-primary {
+    display: inline-block;
+    padding: 0.8rem 1.3rem;
+    background: var(--c-ink);
+    color: var(--c-paper);
+    border-radius: var(--radius-small);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .a-primary:hover {
+    background: var(--c-copper-deep);
+    color: var(--c-paper);
+  }
+
+  .a-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: var(--s-7);
+    align-items: center;
+    padding-block: var(--s-7);
+    border-top: 1px solid var(--c-rule);
+  }
+
+  .a-feature h2 {
+    margin: 0 0 var(--s-3);
+  }
+
+  .a-work,
+  .a-areas {
+    padding-block: var(--s-7);
+    border-top: 1px solid var(--c-rule);
+  }
+
+  .a-principles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5) var(--s-7);
+    max-width: 64rem;
+  }
+
+  .a-principles li {
+    border-left: 3px solid var(--c-copper);
+    padding-left: var(--s-4);
+  }
+
+  .a-areas__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-6);
+  }
+
+  .a-areas h3 {
+    font-size: var(--step-1);
+    margin: 0 0 var(--s-2);
+  }
+
+  .a-areas p {
+    color: var(--c-graphite);
+    margin: 0 0 var(--s-3);
+  }
+
+  @media (max-width: 56rem) {
+    .a-feature,
+    .a-principles,
+    .a-areas__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .a-hero {
+      padding-block: var(--s-7) var(--s-6);
+    }
+  }
+</style>
