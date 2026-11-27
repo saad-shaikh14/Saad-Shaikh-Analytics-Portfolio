@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { evidenceUrl, releasedResearch } from '../../utils/research';
+import { formatDate } from '../../utils/content';
+import { url } from '../../utils/url';
+
+export function getStaticPaths() {
+  return releasedResearch().map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+---
+<BaseLayout title={entry.title} description={entry.summary} type="article" publishedTime={new Date(entry.publicationDate)}>
+  <article class="container-wide research-entry">
+    <nav aria-label="Breadcrumb"><a href={url('/research/')}>Research lab</a></nav>
+    <header class="measure">
+      <p class="eyebrow">{entry.id} · {entry.domains.join(' · ')}</p>
+      <h1>{entry.title}</h1>
+      <p class="lede">{entry.summary}</p>
+      <p><time datetime={entry.publicationDate}>{formatDate(new Date(entry.publicationDate))}</time></p>
+    </header>
+    <div class="prose measure">
+      <h2>Methodology</h2><p>{entry.methodology}</p>
+      <h2>Findings</h2><p>{entry.findings}</p>
+      <h2>Limitations</h2><p>{entry.limitations}</p>
+      <h2>Evidence and reproduction</h2>
+      <ul>
+        <li><a href={evidenceUrl(entry, entry.evidencePath)}>Experiment evidence</a></li>
+        <li><a href={evidenceUrl(entry, entry.findingsPath)}>Detailed findings</a></li>
+        <li><a href={evidenceUrl(entry, entry.reproducePath)}>Reproduction instructions</a></li>
+      </ul>
+    </div>
+  </article>
+</BaseLayout>
+<style>
+  .research-entry { padding-block: var(--s-8) var(--s-6); }
+  .research-entry header { margin-block: var(--s-4) var(--s-6); }
+  .research-entry h1 { margin: 0 0 var(--s-4); }
+</style>

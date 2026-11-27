@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { publishedArticles } from '../../utils/content';
+import { url } from '../../utils/url';
+
+const editions = (await publishedArticles()).filter((a) => !a.data.draft && a.data.tags.includes('friday-data-digest'));
+---
+<BaseLayout title="The Friday Data Digest" description="A weekly digest of developments in data systems, software engineering, cloud infrastructure and AI, with context and links to original sources.">
+  <section class="container-wide page-intro" aria-labelledby="digest-title">
+    <p class="eyebrow">Industry research</p>
+    <h1 id="digest-title">The Friday Data Digest</h1>
+    <div class="measure">
+      <p class="lede">A weekly look at what has changed across data systems, software engineering, cloud infrastructure and AI, and why it matters to engineers.</p>
+      <p>Each edition distinguishes product announcements from documented capabilities and measured evidence, links to original sources and includes an independent perspective.</p>
+      <p><a href={url('/rss.xml')}>Follow published entries by RSS</a></p>
+    </div>
+  </section>
+  <section class="container-wide" aria-labelledby="digest-editions">
+    <h2 id="digest-editions">Published editions</h2>
+    {editions.length === 0 ? <p>No digest editions are published here yet.</p> : editions.map((a) => (
+      <EntryCard href={url('/writing/' + a.id + '/')} title={a.data.title} summary={a.data.summary} kicker="Friday Data Digest" date={a.data.publicationDate} />
+    ))}
+  </section>
+</BaseLayout>
+<style>
+  .page-intro { padding-block: var(--s-8) var(--s-6); }
+  .page-intro h1 { margin: 0 0 var(--s-4); }
+</style>

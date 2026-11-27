@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { LAB_URL, catalogueUrl, releasedResearch } from '../../utils/research';
+import { url } from '../../utils/url';
+
+const entries = releasedResearch();
+---
+<BaseLayout title="Research lab" description="Independent research on data-intensive software systems, with reproducible experiments, measured evidence, source code and stated limitations.">
+  <section class="container-wide page-intro" aria-labelledby="research-title">
+    <p class="eyebrow">Data Systems Engineering Lab</p>
+    <h1 id="research-title">Research lab</h1>
+    <div class="measure">
+      <p class="lede">How do data-intensive systems behave under real constraints? This lab investigates correctness, performance, reliability, architecture and cost through controlled experiments.</p>
+      <p>Each released study documents its question, methodology, actual results, assumptions and limitations. Evidence and reproduction instructions live in the public research repository.</p>
+      <p><a href={LAB_URL}>Visit the GitHub research lab</a> · <a href={catalogueUrl}>Released catalogue snapshot</a></p>
+    </div>
+  </section>
+  <section class="container-wide" aria-labelledby="research-entries">
+    <h2 id="research-entries">Released experiments</h2>
+    {entries.length === 0 ? <p class="measure">No lab experiments have been released yet. Read the <a href={LAB_URL + '/blob/main/RESEARCH_METHODOLOGY.md'}>research methodology</a> or explore the <a href={url('/architecture/')}>architecture library</a>.</p> : entries.map((e) => (
+      <EntryCard href={url('/research/' + e.id + '/')} title={e.title} summary={e.summary} kicker={e.domains.join(' · ')} date={new Date(e.publicationDate)} />
+    ))}
+  </section>
+  <section class="container-wide research-scope" aria-labelledby="scope-title">
+    <h2 id="scope-title">Research scope</h2>
+    <p class="measure">Data engineering, database systems, distributed systems, software and backend engineering, platform architecture, reliability, cloud infrastructure, AI and related disciplines. <a href={LAB_URL + '/blob/main/docs/research-domains.md'}>Explore all research domains.</a></p>
+  </section>
+</BaseLayout>
+<style>
+  .page-intro { padding-block: var(--s-8) var(--s-6); }
+  .page-intro h1 { margin: 0 0 var(--s-4); }
+  .research-scope { margin-top: var(--s-7); }
+</style>
