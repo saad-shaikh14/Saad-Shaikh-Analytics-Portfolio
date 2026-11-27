@@ -4,9 +4,9 @@
 export const SITE = {
   name: 'Saad Shaikh',
   subtitle: 'Inside Modern Data Systems',
-  areas: ['Data Engineering', 'Data Platform Architecture', 'AI'],
+  areas: ['Data Engineering', 'Systems Architecture', 'Software Engineering', 'AI'],
   description:
-    'Reference architectures on how modern data platforms are designed, built and operated, drawn from cited documentation by data engineer Saad Shaikh.',
+    'Independent writing, source-backed architecture and reproducible research on data-intensive software systems by Saad Shaikh.',
   locale: 'en_GB',
   lang: 'en-GB',
   author: 'Saad Shaikh',
@@ -21,6 +21,8 @@ export const NAV = [
   { label: 'Home', path: '/' },
   { label: 'Architecture', path: '/architecture/' },
   { label: 'Writing', path: '/writing/' },
+  { label: 'Research', path: '/research/' },
+  { label: 'Friday Digest', path: '/digest/' },
   { label: 'About', path: '/about/' },
 ] as const;
 

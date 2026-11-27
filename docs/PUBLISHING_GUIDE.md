@@ -95,11 +95,17 @@ Substack documents no per-post canonical URL setting. Test how the web version a
 
 ## 10. Prepare the LinkedIn post
 
-- **Length:** 900–1,500 characters, well under LinkedIn's 3,000-character limit for posts.
+- **Length:** aim for 60–120 words; one substantive engineering insight in one or two short paragraphs.
 - **Shape:**
   - an opening line that states the engineering question;
-  - three short takeaways;
-  - one line on what the full piece covers;
+  - one specific, useful observation;
+  - why it matters or what the full piece covers;
   - the link to the site.
 - **Use a post, not a LinkedIn Article.** Articles have no canonical setting and would create a competing duplicate.
 - **Check the preview card:** it is the site's Open Graph image, 1200 × 630.
+
+## 11. Research lab and Friday digest
+
+The Research page reads a checked-in snapshot of the released public [lab catalogue](https://github.com/saad-shaikh14/data-systems-engineering-lab). Update src/data/research-catalog.json only from authorised public evidence. The catalogue revision and each experiment's evidence revision are immutable Git SHAs; no runtime fetch or private repository dependency. Confirm the referenced files exist and the entries match the public catalogue before updating. The validator rejects malformed IDs, dates, paths, or revisions; structural validation does not prove research findings.
+
+A released digest is a normal reviewed article with the tag friday-data-digest. The Digest index lists tagged published articles; their canonical pages remain under Writing and in the existing RSS feed. Never push unpublished text or draft experimental results to a public branch. Apply the existing review, build, link, accessibility and visual checks before merging.

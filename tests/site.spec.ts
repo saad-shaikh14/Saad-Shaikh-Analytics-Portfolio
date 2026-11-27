@@ -8,7 +8,7 @@ const SHOTS = process.env.SCREENSHOT_DIR ?? 'test-results/screenshots';
 
 // Every content route in the build, discovered from dist so new entries are tested automatically.
 function routes(): string[] {
-  const out = new Set<string>(['/', '/architecture/', '/writing/', '/about/']);
+  const out = new Set<string>(['/', '/architecture/', '/writing/', '/research/', '/digest/', '/about/']);
   const walk = (dir: string, prefix: string) => {
     if (!existsSync(dir)) return;
     for (const name of readdirSync(dir, { withFileTypes: true })) {
@@ -20,6 +20,7 @@ function routes(): string[] {
   };
   walk('dist/architecture', '/architecture/');
   walk('dist/writing', '/writing/');
+  walk('dist/research', '/research/');
   return [...out];
 }
 
@@ -108,6 +109,8 @@ test('navigation links reach every top-level page and mark the current one', asy
   for (const [label, path] of [
     ['Architecture', '/architecture/'],
     ['Writing', '/writing/'],
+    ['Research', '/research/'],
+    ['Friday Digest', '/digest/'],
     ['About', '/about/'],
     ['Home', '/'],
   ]) {

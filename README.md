@@ -1,6 +1,6 @@
 # Saad Shaikh: Inside Modern Data Systems
 
-Source for [saad-shaikh14.github.io/Saad-Shaikh-Analytics-Portfolio](https://saad-shaikh14.github.io/Saad-Shaikh-Analytics-Portfolio/). It is a personal publication on data engineering, data platform architecture and AI: reference architectures drawn from cited documentation, and a writing section for long-form articles.
+Source for [saad-shaikh14.github.io/Saad-Shaikh-Analytics-Portfolio](https://saad-shaikh14.github.io/Saad-Shaikh-Analytics-Portfolio/). It is a personal publication on data engineering, data platform architecture and AI: reference architectures drawn from cited documentation, a writing section for long-form articles, a research lab catalogue and The Friday Data Digest archive.
 
 Built with Astro and TypeScript, written in Markdown and MDX, and deployed to GitHub Pages by GitHub Actions.
 
